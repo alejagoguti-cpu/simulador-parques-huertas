@@ -9,11 +9,12 @@
    - Fase 6: 7 simulaciones transparentes (Solar, Hídrica, Productiva, Compostaje, Biodiversidad, Uso Público, Costos)
    - Fase 7: Comparación de escenarios A/B/C, 6 capas de planos técnicos (2 cuadraditos = 1 m) y exportaciones (PDF, SVG, GeoJSON, CSV, JSON). */
 
-import { BOGOTA_CLIMA, TIPOLOGIAS, ESPECIES, CATALOGO_ELEMENTOS } from './huertas_lab/datos_agronomia.js?v=1';
-import { cargarContextoTerritorial, PROVENIENCIA } from './huertas_lab/diagnostico_parque.js?v=1';
-import { DEFAULT_CFG, generarProyecto, generarTresEscenarios, ejecutarSimulaciones, calcularCercoINTA } from './huertas_lab/motor_espacial.js?v=1';
-import { CAPAS_PLANO, renderPlanoCapaSVG, generarGeoJSON, generarCSV, abrirReportePDF } from './huertas_lab/planos_export.js?v=1';
-import { crearVisor3D } from './huertas_lab/visor_3d.js?v=1';
+import { BOGOTA_CLIMA, TIPOLOGIAS, ESPECIES, CATALOGO_ELEMENTOS } from './huertas_lab/datos_agronomia.js?v=2';
+import { cargarContextoTerritorial, PROVENIENCIA } from './huertas_lab/diagnostico_parque.js?v=2';
+import { DEFAULT_CFG, generarProyecto, generarTresEscenarios, ejecutarSimulaciones } from './huertas_lab/motor_espacial.js?v=2';
+import { CAPAS_PLANO, HATCHES_RAYON, renderPlanoCapaSVG, generarGeoJSON, generarCSV, abrirReportePDF } from './huertas_lab/planos_export.js?v=2';
+import { crearVisor3D } from './huertas_lab/visor_3d.js?v=2';
+import { ic } from './huertas_lab/iconos_flat.js?v=2';
 
 const STORAGE_KEY = 'kennedy_huertas_lab_v2';
 const TIPO_SHORT = {
@@ -49,7 +50,8 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
   let capaPlano = 'camas';
   let especieFoco = 'lechuga';
   let elemSelId = null;
-  let modoPoligono = false;
+  let modoEditor = 'select'; // 'select' | 'hatch' | 'poly'
+  let hatchActivo = 'madera';
   let polyTemp = [];
   let undoStack = [];
   let redoStack = [];
@@ -99,7 +101,12 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
 #ph-panel .ph-tabs [role="tab"], #ph-modal .ph-tabs [role="tab"]{
   position:relative; flex:none; min-height:36px; padding:6px 10px; border:0; border-radius:0; background:transparent;
   color:#a8b5ae; font:500 11.2px var(--ui-sans,Inter,sans-serif); cursor:pointer; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:5px;
 }
+.ph-ic{ flex:none; display:inline-block; vertical-align:middle; }
+.ph-blq-bar{ display:flex; flex-wrap:wrap; gap:4px; padding:7px 8px; background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.09); border-radius:10px; }
+#ph-modal .ph-blq{ min-height:26px; padding:3px 7px; font-size:10.4px; border-radius:6px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:#d2ded8; cursor:pointer; display:inline-flex; align-items:center; gap:4px; }
+#ph-modal .ph-blq:hover{ background:rgba(255,255,255,.13); color:#fff; border-color:rgba(255,255,255,.26); }
 #ph-panel .ph-tabs [role="tab"]:hover, #ph-modal .ph-tabs [role="tab"]:hover{ color:#f0f5f2; background:rgba(255,255,255,.04); border:0; }
 #ph-panel .ph-tabs [role="tab"][aria-selected="true"], #ph-modal .ph-tabs [role="tab"][aria-selected="true"]{ color:#86efac; background:transparent; }
 #ph-panel .ph-tabs [role="tab"][aria-selected="true"]::after, #ph-modal .ph-tabs [role="tab"][aria-selected="true"]::after{
@@ -166,7 +173,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
 #ph-modal:modal{ overscroll-behavior:contain; }
 #ph-modal::backdrop{ background:rgba(4,9,11,.76); backdrop-filter:blur(8px); overflow:hidden; overscroll-behavior:contain; }
 .ph-mbody{ overflow-y:auto; flex:1; }
-.ph-svg-wrap{ background:#f7faf8; border-radius:12px; border:1px solid rgba(255,255,255,.14); overflow:auto; padding:10px; text-align:center; max-height:54vh; }
+.ph-svg-wrap{ background:#faf8f4; border-radius:12px; border:1px solid rgba(255,255,255,.14); overflow:auto; padding:10px; text-align:center; max-height:54vh; }
 .ph-svg-wrap svg{ max-width:100%; height:auto; display:inline-block; user-select:none; }
 
 /* Editor Manual 2D/3D layout */
@@ -228,18 +235,18 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
         <h2 id="ph-title"><span class="dot" aria-hidden="true"></span>Parques · Lab Agroecológico</h2>
         <small>${PARQUES.length} parques Kennedy · INTA + JBB + FAO</small>
       </div>
-      <button type="button" class="ph-x" id="ph-close" aria-label="Cerrar panel de parques y huertas">×</button>
+      <button type="button" class="ph-x" id="ph-close" aria-label="Cerrar panel de parques y huertas">${ic('close', 15)}</button>
     </div>
     <div class="ph-tabs" role="tablist" focusgroup="tablist nomemory" aria-label="Flujo de diseño de huertas" id="ph-tabs">
-      <button type="button" role="tab" id="ph-t-parques" aria-selected="true" focusgroupstart>1. Parques (${PARQUES.length})</button>
-      <button type="button" role="tab" id="ph-t-diag" aria-selected="false">2. Diagnóstico</button>
-      <button type="button" role="tab" id="ph-t-diseno" aria-selected="false">3. Diseñar Huerta</button>
+      <button type="button" role="tab" id="ph-t-parques" aria-selected="true" focusgroupstart>${ic('park', 13)} Parques (${PARQUES.length})</button>
+      <button type="button" role="tab" id="ph-t-diag" aria-selected="false">${ic('diagnose', 13)} Diagnóstico</button>
+      <button type="button" role="tab" id="ph-t-diseno" aria-selected="false">${ic('sprout', 13)} Diseñar</button>
     </div>
     <div class="ph-body">
       <!-- TAB 1: 576 PARQUES + PARQUE PILOTO -->
       <div role="tabpanel" aria-labelledby="ph-t-parques" tabindex="0" id="ph-p-parques">
         <div class="ph-tp-inner">
-          <button type="button" class="ph-btn ph-btn-amb" id="ph-piloto-btn" style="width:100%">★ Abrir Parque Piloto: Parque Zonal Castilla (13.752 m²)</button>
+          <button type="button" class="ph-btn ph-btn-amb" id="ph-piloto-btn" style="width:100%">${ic('star', 13)} Abrir Parque Piloto: Parque Zonal Castilla (13.752 m²)</button>
           <div>
             <label class="ph-label" for="ph-buscar">Buscar entre los ${PARQUES.length} parques de Kennedy</label>
             <input type="search" id="ph-buscar" class="ph-input" placeholder="Ej. Castilla, Timiza, Tintal, Alsacia…" autocomplete="off" />
@@ -252,8 +259,8 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
             <button type="button" class="ph-btn" data-f="PARQUE DE BOLSILLO" aria-pressed="false">Bolsillo</button>
           </div>
           <div class="ph-grid2">
-            <button type="button" class="ph-btn" id="ph-vista-all">🗺 Ver 576 parques</button>
-            <button type="button" class="ph-btn" id="ph-acercar">🔎 Acercar huerta</button>
+            <button type="button" class="ph-btn" id="ph-vista-all">${ic('map', 13)} Ver 576 parques</button>
+            <button type="button" class="ph-btn" id="ph-acercar">${ic('zoom', 13)} Acercar huerta</button>
           </div>
           <ul class="ph-list" id="ph-lista" aria-label="Lista de parques de Kennedy"></ul>
         </div>
@@ -272,7 +279,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
             <h3>Tipologías viables según contexto (no regla fija)</h3>
             <div id="ph-diag-rec" class="ph-row"></div>
           </div>
-          <button type="button" class="ph-btn ph-btn-pri" id="ph-go-disenar">🌱 DISEÑAR HUERTA EN ESTE PARQUE</button>
+          <button type="button" class="ph-btn ph-btn-pri" id="ph-go-disenar">${ic('sprout', 15)} DISEÑAR HUERTA EN ESTE PARQUE</button>
           <ul class="ph-crit" id="ph-diag-12" aria-label="Los 12 criterios de análisis del parque"></ul>
         </div>
       </div>
@@ -306,7 +313,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
             <h3>Simulación viva en 3D (Ciclo · Sol · Riego)</h3>
             <div class="ph-row" style="justify-content:space-between;margin-bottom:3px">
               <label class="ph-label" for="ph-dia" style="margin:0">Día <span id="ph-dia-v">65</span>/180 · <em id="ph-etapa-v" style="color:#86efac;font-style:normal">Crecimiento</em></label>
-              <button type="button" class="ph-btn" id="ph-play-ciclo" style="min-height:24px;padding:2px 8px">▶ Ciclo</button>
+              <button type="button" class="ph-btn" id="ph-play-ciclo" style="min-height:24px;padding:2px 8px">${ic('play', 11)} Ciclo</button>
             </div>
             <input type="range" id="ph-dia" min="0" max="180" step="1" value="65" style="width:100%;accent-color:#34d399" />
             <div class="ph-grid2" style="margin-top:6px">
@@ -396,7 +403,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
             <label class="ph-chk"><input type="checkbox" id="ph-guia" checked /> Escuadra 3-4-5 (60 × 80 × 100 cm)</label>
           </div>
 
-          <button type="button" class="ph-btn ph-btn-pri" id="ph-open-modal">🧭 Editor Manual · Simulaciones · Planos · Exportar</button>
+          <button type="button" class="ph-btn ph-btn-pri" id="ph-open-modal">${ic('blocks', 14)} Planos CAD · Bloques · Simulaciones · Exportar</button>
         </div>
       </div>
     </div>
@@ -404,6 +411,23 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
   document.body.appendChild(panel);
 
   /* ================= MODAL DE LABORATORIO COMPLETO (<dialog closedby="any">) ================= */
+  const BLOQUES_RAPIDOS = [
+    ['cantero', 'bed', 'Cantero'],
+    ['jardinera_acc', 'bed', 'Jardinera'],
+    ['hidroponia', 'water', 'Hidroponía'],
+    ['pergola', 'pergola', 'Pérgola'],
+    ['banca', 'bench', 'Banca'],
+    ['mesa_trabajo', 'table', 'Mesa'],
+    ['polinizadores', 'flower', 'Polinizadores'],
+    ['invernadero', 'greenhouse', 'Invernadero'],
+    ['abonera', 'compost', 'Abonera'],
+    ['bodega', 'blocks', 'Bodega'],
+    ['agua', 'water', 'Cisterna'],
+    ['lavado', 'water', 'Lavado'],
+    ['infiltracion', 'layers', 'Infiltración'],
+    ['meteo', 'sensor', 'Meteo']
+  ];
+
   const modal = document.createElement('dialog');
   modal.id = 'ph-modal';
   modal.setAttribute('closedby', 'any');
@@ -411,49 +435,53 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
   modal.innerHTML = `
     <div class="ph-hd">
       <div>
-        <h2 id="ph-mtitle">Laboratorio Agroecológico · Diseño, Simulaciones y Planos</h2>
+        <h2 id="ph-mtitle">Estudio Arquitectónico y Agroecológico · Planos y Bloques</h2>
         <small id="ph-msub">Pro Huerta INTA · JBB · FAO-56 · AGROSAVIA · Kennedy, Bogotá</small>
       </div>
       <div class="ph-row">
-        <button type="button" class="ph-btn ph-btn-amb" id="ph-exp-pdf">🖨 PDF</button>
-        <button type="button" class="ph-btn" id="ph-exp-svg">⬇ SVG</button>
-        <button type="button" class="ph-btn" id="ph-exp-geo">⬇ GeoJSON</button>
-        <button type="button" class="ph-btn" id="ph-exp-csv">⬇ CSV</button>
-        <button type="button" class="ph-x" id="ph-mclose" aria-label="Cerrar laboratorio técnico">×</button>
+        <button type="button" class="ph-btn ph-btn-amb" id="ph-exp-pdf">${ic('print', 13)} PDF</button>
+        <button type="button" class="ph-btn" id="ph-exp-svg">${ic('download', 13)} SVG</button>
+        <button type="button" class="ph-btn" id="ph-exp-geo">${ic('download', 13)} GeoJSON</button>
+        <button type="button" class="ph-btn" id="ph-exp-csv">${ic('download', 13)} CSV</button>
+        <button type="button" class="ph-x" id="ph-mclose" aria-label="Cerrar laboratorio técnico">${ic('close', 15)}</button>
       </div>
     </div>
     <div class="ph-tabs" role="tablist" focusgroup="tablist nomemory" aria-label="Herramientas del laboratorio agroecológico" id="ph-mtabs">
-      <button type="button" role="tab" id="ph-mt-ed" aria-selected="true" focusgroupstart>✏️ Editor Manual 2D/3D</button>
-      <button type="button" role="tab" id="ph-mt-planos" aria-selected="false">📐 Planos (6 capas)</button>
-      <button type="button" role="tab" id="ph-mt-ciclo" aria-selected="false">🌱 Ciclo 8 Etapas</button>
-      <button type="button" role="tab" id="ph-mt-sims" aria-selected="false">📊 7 Simulaciones</button>
-      <button type="button" role="tab" id="ph-mt-comp" aria-selected="false">⚖️ Comparar A / B / C</button>
-      <button type="button" role="tab" id="ph-mt-cerco" aria-selected="false">🧰 Cerco INTA y Registro</button>
+      <button type="button" role="tab" id="ph-mt-ed" aria-selected="true" focusgroupstart>${ic('blocks', 13)} Editor CAD y Bloques</button>
+      <button type="button" role="tab" id="ph-mt-planos" aria-selected="false">${ic('layers', 13)} Planos (6 capas)</button>
+      <button type="button" role="tab" id="ph-mt-ciclo" aria-selected="false">${ic('cycle', 13)} Ciclo 8 Etapas</button>
+      <button type="button" role="tab" id="ph-mt-sims" aria-selected="false">${ic('chart', 13)} 7 Simulaciones</button>
+      <button type="button" role="tab" id="ph-mt-comp" aria-selected="false">${ic('compare', 13)} Comparar A / B / C</button>
+      <button type="button" role="tab" id="ph-mt-cerco" aria-selected="false">${ic('fence', 13)} Cerco INTA y Registro</button>
     </div>
     <div class="ph-mbody">
-      <!-- MODAL TAB 1: EDITOR MANUAL 2D/3D -->
+      <!-- MODAL TAB 1: EDITOR ARCHITECTÓNICO CAD ESTILO RAYON (BLOQUES + RAYADOS + POLÍGONO) -->
       <div role="tabpanel" aria-labelledby="ph-mt-ed" tabindex="0" id="ph-mp-ed">
         <div class="ph-tp-inner">
           <div class="ph-row" style="justify-content:space-between">
-            <div class="ph-row">
-              <label class="ph-label" for="ph-add-tipo" style="margin:0">Añadir módulo:</label>
-              <select id="ph-add-tipo" class="ph-select" style="width:auto;min-width:190px">
-                ${Object.values(CATALOGO_ELEMENTOS).map(e => `<option value="${e.id}">${esc(e.n)} (${e.l}×${e.w}m)</option>`).join('')}
+            <div class="ph-row" role="group" aria-label="Herramientas de dibujo CAD" id="ph-ed-tools">
+              <button type="button" class="ph-btn on" data-tool="select" aria-pressed="true">${ic('cursor', 13)} Seleccionar / Mover</button>
+              <button type="button" class="ph-btn" data-tool="hatch" aria-pressed="false">${ic('hatch', 13)} Trazar rayado</button>
+              <select id="ph-hatch-sel" class="ph-select" aria-label="Patrón de rayado arquitectónico" style="width:auto;min-width:155px;min-height:29px">
+                ${Object.values(HATCHES_RAYON).map(h => `<option value="${h.id}" ${h.id === 'madera' ? 'selected' : ''}>${esc(h.n)}</option>`).join('')}
               </select>
-              <button type="button" class="ph-btn" id="ph-add-btn">+ Insertar</button>
-              <button type="button" class="ph-btn" id="ph-poly-btn" aria-pressed="false">⬠ Dibujar polígono</button>
+              <button type="button" class="ph-btn" data-tool="poly" aria-pressed="false">${ic('polygon', 13)} Polígono perímetro</button>
             </div>
             <div class="ph-row">
-              <button type="button" class="ph-btn" id="ph-undo">↶ Deshacer</button>
-              <button type="button" class="ph-btn" id="ph-redo">↷ Rehacer</button>
-              <button type="button" class="ph-btn ph-btn-amb" id="ph-save-proj">💾 Guardar proyecto</button>
+              <button type="button" class="ph-btn" id="ph-undo">${ic('undo', 13)} Deshacer</button>
+              <button type="button" class="ph-btn" id="ph-redo">${ic('redo', 13)} Rehacer</button>
+              <button type="button" class="ph-btn ph-btn-amb" id="ph-save-proj">${ic('save', 13)} Guardar</button>
             </div>
           </div>
+          <div class="ph-blq-bar" id="ph-blq-bar" aria-label="Librería de bloques arquitectónicos CAD">
+            <span class="ph-label" style="margin:auto 6px auto 2px">Bloques CAD:</span>
+            ${BLOQUES_RAPIDOS.map(([id, icon, lbl]) => `<button type="button" class="ph-blq" data-add-blq="${id}">${ic(icon, 12)} ${esc(lbl)}</button>`).join('')}
+          </div>
           <div class="ph-ed-grid">
-            <div class="ph-svg-wrap" id="ph-ed-canvas" style="max-height:56vh"></div>
+            <div class="ph-svg-wrap" id="ph-ed-canvas" style="max-height:54vh"></div>
             <div class="ph-box" id="ph-ed-prop">
-              <h3>Elemento seleccionado</h3>
-              <p style="color:#9fb0a8;font-size:11px">Haz clic sobre cualquier cama, banca, mesa, pérgola o infraestructura en el plano para moverla (arrastrando), rotarla, cambiar dimensiones o elegir especie. Todos los cambios se reflejan en 3D en vivo.</p>
+              <h3>Inspector de bloques</h3>
+              <p style="color:#9fb0a8;font-size:11px">Inserta bloques CAD, arrastra para mover con ajuste de 25 cm o usa "Trazar rayado" para dibujar superficies arquitectónicas (deck, gravilla, prado, tierra, agua) en vivo en 2D y 3D.</p>
             </div>
           </div>
         </div>
@@ -556,7 +584,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
               <input type="date" id="ph-fecha" class="ph-input" style="margin-bottom:6px" />
               <label class="ph-label" for="ph-notas">Registro de campo (siembras, plagas, heladas, cosechas)</label>
               <textarea id="ph-notas" rows="3" class="ph-input" placeholder="Ej. Ensayo germinación 90% · almácigo tomate en invernadero · control de pulgón con caléndula…"></textarea>
-              <button type="button" class="ph-btn ph-btn-amb" id="ph-save-reg" style="margin-top:6px;width:100%">💾 Guardar registro del parque</button>
+              <button type="button" class="ph-btn ph-btn-amb" id="ph-save-reg" style="margin-top:6px;width:100%">${ic('save', 13)} Guardar registro del parque</button>
             </div>
           </div>
         </div>
@@ -613,9 +641,14 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
   const selectModalTab = wireTabs(document.getElementById('ph-mtabs'), ['ph-mp-ed', 'ph-mp-planos', 'ph-mp-ciclo', 'ph-mp-sims', 'ph-mp-comp', 'ph-mp-cerco']);
 
   /* ================= LÓGICA DE SELECCIÓN, HISTORIAL UNDO/REDO Y ACTUALIZACIÓN ================= */
+  const snapState = () => JSON.stringify({
+    elementos: proyectoActivo.elementos,
+    zonasRayado: proyectoActivo.zonasRayado || [],
+    poligonoInterv: proyectoActivo.poligonoInterv
+  });
   const pushUndo = () => {
     if (!proyectoActivo) return;
-    undoStack.push(JSON.stringify({ elementos: proyectoActivo.elementos, poligonoInterv: proyectoActivo.poligonoInterv }));
+    undoStack.push(snapState());
     if (undoStack.length > 35) undoStack.shift();
     redoStack = [];
   };
@@ -660,6 +693,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
     regenerarDesdeCfg(true, true);
     if (st && st.elementos) {
       proyectoActivo.elementos = JSON.parse(JSON.stringify(st.elementos));
+      if (st.zonasRayado) proyectoActivo.zonasRayado = JSON.parse(JSON.stringify(st.zonasRayado));
       if (st.poligonoInterv) proyectoActivo.poligonoInterv = st.poligonoInterv;
       recalcularYRender(false);
     }
@@ -679,7 +713,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
       const sel = parqueActivo && parqueActivo.id === p.id;
       const pil = p.nombre === 'Castilla' && p.tipo === 'PARQUE ZONAL';
       return `<li><button type="button" data-pid="${p.id}" class="${sel ? 'sel' : ''}">
-        <span><span class="pnom">${pil ? '★ ' : ''}${esc(p.nombre)}</span><span class="pmeta">${fmt(p.area)} m²${saved[p.id] ? ' · proyecto guardado' : ''}</span></span>
+        <span><span class="pnom">${pil ? 'Piloto · ' : ''}${esc(p.nombre)}</span><span class="pmeta">${fmt(p.area)} m²${saved[p.id] ? ' · guardado' : ''}</span></span>
         <span class="ph-tag" style="color:${p.color}">${TIPO_SHORT[p.tipo] || 'Parque'}</span>
       </button></li>`;
     }).join('') || '<li style="padding:8px;color:#94a39b">Sin resultados con ese filtro.</li>';
@@ -733,19 +767,63 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
     panel.querySelectorAll('[data-cfg]').forEach(b => { const on = String(cfg[b.dataset.cfg]) === b.dataset.v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
   }
 
-  /* ================= MODAL DE LABORATORIO: EDITOR 2D/3D, 6 PLANOS, 8 ETAPAS, 7 SIMS, A/B/C ================= */
+  /* ================= MODAL DE LABORATORIO: EDITOR CAD RAYON 2D/3D, 6 PLANOS, 8 ETAPAS, 7 SIMS, A/B/C ================= */
   function poblarEditor() {
     if (!proyectoActivo) return;
+    if (!proyectoActivo.zonasRayado) proyectoActivo.zonasRayado = [];
     const box = document.getElementById('ph-ed-canvas');
-    box.innerHTML = renderPlanoCapaSVG(proyectoActivo, 'camas', diagActivo, { editor: true, selectedId: elemSelId, pxm: 20 });
+    box.innerHTML = renderPlanoCapaSVG(proyectoActivo, 'camas', diagActivo, { editor: true, selectedId: elemSelId, pxm: 22 });
     const prop = document.getElementById('ph-ed-prop');
     const el = proyectoActivo.elementos.find(e => e.id === elemSelId);
-    if (!el) {
-      prop.innerHTML = `<h3>Editor manual 2D ↔ 3D</h3>
-        <p style="margin:0 0 8px;color:#b8c7bf;font-size:11px"><b>Arrastra</b> cualquier módulo en el plano para reubicarlo en 3D en tiempo real, o haz clic para editar su especie, tamaño y rotación.</p>
-        <p style="margin:0;color:#86efac;font-size:10.5px">${modoPoligono ? '⬠ Modo polígono activo: haz clic en 3+ puntos del plano y vuelve a pulsar "Dibujar polígono" para cerrar.' : `Módulos activos: ${proyectoActivo.elementos.length} · Área cultivo: ${proyectoActivo.sim.areaCultivo} m²`}</p>`;
+    const zona = !el ? proyectoActivo.zonasRayado.find(z => z.id === elemSelId) : null;
+
+    if (zona) {
+      prop.innerHTML = `<h3>Bloque de rayado CAD</h3>
+        <label class="ph-label" for="ed-znom">Nombre / etiqueta</label>
+        <input type="text" id="ed-znom" class="ph-input" value="${esc(zona.n || '')}" style="margin-bottom:6px" />
+        <label class="ph-label" for="ed-zhatch">Patrón de rayado (material 2D y 3D)</label>
+        <select id="ed-zhatch" class="ph-select" style="margin-bottom:6px">${Object.values(HATCHES_RAYON).map(h => `<option value="${h.id}" ${h.id === zona.hatch ? 'selected' : ''}>${esc(h.n)}</option>`).join('')}</select>
+        <div class="ph-grid2" style="margin-bottom:6px">
+          <div><label class="ph-label" for="ed-l">Largo (m)</label><input type="number" id="ed-l" class="ph-input" step="0.25" min="0.5" max="20" value="${zona.l}" /></div>
+          <div><label class="ph-label" for="ed-w">Ancho (m)</label><input type="number" id="ed-w" class="ph-input" step="0.25" min="0.5" max="20" value="${zona.w}" /></div>
+        </div>
+        <div class="ph-grid3" style="margin-bottom:6px">
+          <button type="button" class="ph-btn" id="ed-rot-l">${ic('rotate', 12)} -15°</button>
+          <button type="button" class="ph-btn" id="ed-rot-r">${ic('rotate', 12)} +15°</button>
+          <button type="button" class="ph-btn" id="ed-rot-90">90°</button>
+        </div>
+        <div class="ph-grid2">
+          <button type="button" class="ph-btn" id="ed-dup">${ic('copy', 12)} Duplicar</button>
+          <button type="button" class="ph-btn" id="ed-del" style="color:#fda4af;border-color:rgba(251,113,133,.4)">${ic('trash', 12)} Eliminar</button>
+        </div>`;
+      document.getElementById('ed-znom').onchange = (e) => { pushUndo(); zona.n = e.target.value.trim() || HATCHES_RAYON[zona.hatch]?.n || 'Zona'; recalcularYRender(false); };
+      document.getElementById('ed-zhatch').onchange = (e) => { pushUndo(); zona.hatch = e.target.value; recalcularYRender(false); };
+      document.getElementById('ed-l').onchange = (e) => { pushUndo(); zona.l = Math.max(0.5, Number(e.target.value) || zona.l); recalcularYRender(false); };
+      document.getElementById('ed-w').onchange = (e) => { pushUndo(); zona.w = Math.max(0.5, Number(e.target.value) || zona.w); recalcularYRender(false); };
+      document.getElementById('ed-rot-l').onclick = () => { pushUndo(); zona.rot = +((zona.rot || 0) - Math.PI / 12).toFixed(3); recalcularYRender(false); };
+      document.getElementById('ed-rot-r').onclick = () => { pushUndo(); zona.rot = +((zona.rot || 0) + Math.PI / 12).toFixed(3); recalcularYRender(false); };
+      document.getElementById('ed-rot-90').onclick = () => { pushUndo(); zona.rot = +((zona.rot || 0) + Math.PI / 2).toFixed(3); recalcularYRender(false); };
+      document.getElementById('ed-dup').onclick = () => {
+        pushUndo();
+        const cp = { ...zona, id: 'zr-' + (Date.now() % 100000), u: +(zona.u + 0.75).toFixed(2), v: +(zona.v + 0.75).toFixed(2) };
+        proyectoActivo.zonasRayado.push(cp); elemSelId = cp.id; recalcularYRender(false);
+      };
+      document.getElementById('ed-del').onclick = () => {
+        pushUndo();
+        proyectoActivo.zonasRayado = proyectoActivo.zonasRayado.filter(z => z.id !== zona.id);
+        elemSelId = null; recalcularYRender(false);
+      };
+    } else if (!el) {
+      const tipModo = modoEditor === 'hatch'
+        ? `Modo Trazar rayado activo (${esc(HATCHES_RAYON[hatchActivo]?.n || hatchActivo)}): haz clic y arrastra sobre el plano para dibujar un bloque arquitectónico con trama.`
+        : modoEditor === 'poly'
+          ? 'Modo Polígono activo: marca 3 o más vértices en el plano para redefinir el perímetro de intervención.'
+          : 'Haz clic en un bloque CAD de la barra superior para insertarlo, o arrastra cualquier elemento del plano para moverlo en 2D y 3D.';
+      prop.innerHTML = `<h3>Editor CAD · Bloques y Rayados</h3>
+        <p style="margin:0 0 8px;color:#b8c7bf;font-size:11px">${tipModo}</p>
+        <p style="margin:0;color:#86efac;font-size:10.5px">Bloques: ${proyectoActivo.elementos.length} · Rayados: ${proyectoActivo.zonasRayado.length} · Cultivo: ${proyectoActivo.sim.areaCultivo} m²</p>`;
     } else {
-      const espOpts = el.cat === 'cultivo' ? `<label class="ph-label" for="ed-esp">Especie (Bogotá)</label>
+      const espOpts = el.cat === 'cultivo' ? `<label class="ph-label" for="ed-esp">Especie vegetal (Bogotá)</label>
         <select id="ed-esp" class="ph-select" style="margin-bottom:6px">${Object.values(ESPECIES).map(s => `<option value="${s.id}" ${s.id === el.especieId ? 'selected' : ''}>${esc(s.n)} (${esc(s.fam)})</option>`).join('')}</select>` : '';
       prop.innerHTML = `<h3>${esc(el.etiqueta || el.n)}</h3>
         ${el.justificacion ? `<p style="margin:0 0 7px;font-size:10.5px;color:#a7f3d0">${esc(el.justificacion)}</p>` : ''}
@@ -754,13 +832,14 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
           <div><label class="ph-label" for="ed-l">Largo (m)</label><input type="number" id="ed-l" class="ph-input" step="0.25" min="0.5" max="12" value="${el.l}" /></div>
           <div><label class="ph-label" for="ed-w">Ancho (m)</label><input type="number" id="ed-w" class="ph-input" step="0.25" min="0.4" max="8" value="${el.w}" /></div>
         </div>
-        <div class="ph-grid2" style="margin-bottom:6px">
-          <button type="button" class="ph-btn" id="ed-rot-l">↺ -15°</button>
-          <button type="button" class="ph-btn" id="ed-rot-r">↻ +15°</button>
+        <div class="ph-grid3" style="margin-bottom:6px">
+          <button type="button" class="ph-btn" id="ed-rot-l">${ic('rotate', 12)} -15°</button>
+          <button type="button" class="ph-btn" id="ed-rot-r">${ic('rotate', 12)} +15°</button>
+          <button type="button" class="ph-btn" id="ed-rot-90">90°</button>
         </div>
         <div class="ph-grid2">
-          <button type="button" class="ph-btn" id="ed-dup">⧉ Duplicar</button>
-          <button type="button" class="ph-btn" id="ed-del" style="color:#fda4af;border-color:rgba(251,113,133,.4)">✕ Eliminar</button>
+          <button type="button" class="ph-btn" id="ed-dup">${ic('copy', 12)} Duplicar</button>
+          <button type="button" class="ph-btn" id="ed-del" style="color:#fda4af;border-color:rgba(251,113,133,.4)">${ic('trash', 12)} Eliminar</button>
         </div>`;
 
       const edEsp = document.getElementById('ed-esp');
@@ -769,6 +848,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
       document.getElementById('ed-w').onchange = (e) => { pushUndo(); el.w = Math.max(0.4, Number(e.target.value) || el.w); el.dripLines = el.w >= 1.2 ? 3 : 2; recalcularYRender(false); };
       document.getElementById('ed-rot-l').onclick = () => { pushUndo(); el.rot = +((el.rot || 0) - Math.PI / 12).toFixed(3); recalcularYRender(false); };
       document.getElementById('ed-rot-r').onclick = () => { pushUndo(); el.rot = +((el.rot || 0) + Math.PI / 12).toFixed(3); recalcularYRender(false); };
+      document.getElementById('ed-rot-90').onclick = () => { pushUndo(); el.rot = +((el.rot || 0) + Math.PI / 2).toFixed(3); recalcularYRender(false); };
       document.getElementById('ed-dup').onclick = () => {
         pushUndo();
         const cp = JSON.parse(JSON.stringify(el));
@@ -784,26 +864,44 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
       };
     }
 
-    // Interacción pointer (arrastre directo de módulos y dibujo de polígono de intervención)
+    // Interacción pointer: mover bloques CAD, trazar bloques de rayado por arrastre y dibujar polígono
     const svg = box.querySelector('svg');
     if (!svg) return;
+    svg.style.cursor = modoEditor === 'hatch' || modoEditor === 'poly' ? 'crosshair' : 'default';
     const pxm = Number(svg.dataset.pxm), padL = Number(svg.dataset.padl), padT = Number(svg.dataset.padt), uMin = Number(svg.dataset.umin), vMin = Number(svg.dataset.vmin);
     const toLocal = (ev) => {
       const r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
       const sx = (ev.clientX - r.left) * (vb.width / r.width), sy = (ev.clientY - r.top) * (vb.height / r.height);
       return [uMin + (sx - padL) / pxm, vMin + (sy - padT) / pxm];
     };
+    const snap = (v) => +(Math.round(v * 4) / 4).toFixed(2);
     let dragging = null, offU = 0, offV = 0, moved = false;
+    let drawStart = null, previewRect = null;
+
     svg.addEventListener('pointerdown', (ev) => {
-      if (modoPoligono) {
+      if (modoEditor === 'poly') {
         const [u, v] = toLocal(ev);
-        polyTemp.push([+u.toFixed(2), +v.toFixed(2)]);
-        if (polyTemp.length >= 3) { proyectoActivo.poligonoInterv = polyTemp.slice(); }
+        polyTemp.push([snap(u), snap(v)]);
+        if (polyTemp.length >= 3) { pushUndo(); proyectoActivo.poligonoInterv = polyTemp.slice(); }
         poblarEditor(); return;
+      }
+      if (modoEditor === 'hatch') {
+        const [u, v] = toLocal(ev);
+        drawStart = [snap(u), snap(v)];
+        previewRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        previewRect.setAttribute('fill', `url(#rh-${hatchActivo})`);
+        previewRect.setAttribute('fill-opacity', '0.78');
+        previewRect.setAttribute('stroke', '#b91c1c');
+        previewRect.setAttribute('stroke-width', '1.4');
+        previewRect.setAttribute('stroke-dasharray', '4 2');
+        svg.appendChild(previewRect);
+        svg.setPointerCapture(ev.pointerId);
+        return;
       }
       const gEl = ev.target.closest('[data-elid]');
       if (!gEl) { elemSelId = null; poblarEditor(); return; }
-      const target = proyectoActivo.elementos.find(x => x.id === gEl.dataset.elid);
+      const target = proyectoActivo.elementos.find(x => x.id === gEl.dataset.elid)
+        || proyectoActivo.zonasRayado.find(z => z.id === gEl.dataset.elid);
       if (!target) return;
       elemSelId = target.id;
       const [u, v] = toLocal(ev);
@@ -811,15 +909,41 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
       svg.setPointerCapture(ev.pointerId);
     });
     svg.addEventListener('pointermove', (ev) => {
+      if (drawStart && previewRect) {
+        const [u, v] = toLocal(ev);
+        const u0 = Math.min(drawStart[0], snap(u)), v0 = Math.min(drawStart[1], snap(v));
+        const du = Math.max(0.5, Math.abs(snap(u) - drawStart[0])), dv = Math.max(0.5, Math.abs(snap(v) - drawStart[1]));
+        previewRect.setAttribute('x', (padL + (u0 - uMin) * pxm).toFixed(1));
+        previewRect.setAttribute('y', (padT + (v0 - vMin) * pxm).toFixed(1));
+        previewRect.setAttribute('width', (du * pxm).toFixed(1));
+        previewRect.setAttribute('height', (dv * pxm).toFixed(1));
+        return;
+      }
       if (!dragging) return;
       const [u, v] = toLocal(ev);
       if (!moved) { pushUndo(); moved = true; }
-      dragging.u = +(Math.round((u + offU) * 4) / 4).toFixed(2);
-      dragging.v = +(Math.round((v + offV) * 4) / 4).toFixed(2);
+      dragging.u = snap(u + offU);
+      dragging.v = snap(v + offV);
       const gNode = svg.querySelector(`[data-elid="${dragging.id}"]`);
       if (gNode) gNode.setAttribute('transform', `translate(${(padL + (dragging.u - uMin) * pxm).toFixed(1)},${(padT + (dragging.v - vMin) * pxm).toFixed(1)}) rotate(${((dragging.rot || 0) * 180 / Math.PI).toFixed(1)})`);
     });
-    svg.addEventListener('pointerup', () => {
+    svg.addEventListener('pointerup', (ev) => {
+      if (drawStart && previewRect) {
+        const [u, v] = toLocal(ev);
+        const u1 = snap(u), v1 = snap(v);
+        const l = Math.max(1.0, Math.abs(u1 - drawStart[0]));
+        const w = Math.max(1.0, Math.abs(v1 - drawStart[1]));
+        const cu = +((drawStart[0] + u1) / 2).toFixed(2);
+        const cv = +((drawStart[1] + v1) / 2).toFixed(2);
+        drawStart = null; previewRect.remove(); previewRect = null;
+        pushUndo();
+        const hDef = HATCHES_RAYON[hatchActivo] || HATCHES_RAYON.madera;
+        const nz = { id: 'zr-' + (Date.now() % 100000), n: hDef.n.split(' (')[0], hatch: hDef.id, u: cu, v: cv, l: +l.toFixed(2), w: +w.toFixed(2), rot: 0 };
+        proyectoActivo.zonasRayado.push(nz);
+        elemSelId = nz.id;
+        recalcularYRender(false);
+        return;
+      }
       if (dragging) { const wasMoved = moved; dragging = null; if (wasMoved) recalcularYRender(false); else poblarEditor(); }
     });
   }
@@ -1022,8 +1146,9 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
     if (proyectoActivo) { proyectoActivo.sim = ejecutarSimulaciones(proyectoActivo, parqueActivo, diagActivo, simEnv); actualizarPanelUI(); if (modal.open) poblarCiclo8(); }
   };
   document.getElementById('ph-play-ciclo').onclick = (e) => {
-    if (playTimer) { clearInterval(playTimer); playTimer = 0; e.target.textContent = '▶ Ciclo'; return; }
-    e.target.textContent = '❚❚ Pausa';
+    const btn = e.currentTarget;
+    if (playTimer) { clearInterval(playTimer); playTimer = 0; btn.innerHTML = `${ic('play', 11)} Ciclo`; return; }
+    btn.innerHTML = `${ic('pause', 11)} Pausa`;
     playTimer = setInterval(() => {
       simEnv.diaCiclo = (simEnv.diaCiclo + 2) % 181;
       visor.aplicarDiaCiclo(simEnv.diaCiclo);
@@ -1043,7 +1168,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
   document.getElementById('ph-mes').onchange = updSol;
   document.getElementById('ph-riego-anim').onchange = (e) => { riegoAnimOn = e.target.checked; visor.verRiegoAnim(riegoAnimOn); };
 
-  // Modal Laboratorio y Editor Manual
+  // Modal Laboratorio y Editor CAD estilo Rayon
   document.getElementById('ph-open-modal').onclick = () => { poblarModal(); modal.showModal(); };
   document.getElementById('ph-mclose').onclick = () => modal.close();
   document.getElementById('ph-capas-btns').onclick = (e) => {
@@ -1054,11 +1179,25 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
   };
   document.getElementById('ph-esp-foco').onchange = (e) => { especieFoco = e.target.value; poblarCiclo8(); };
 
-  document.getElementById('ph-add-btn').onclick = () => {
-    if (!proyectoActivo) return;
+  document.getElementById('ph-ed-tools').onclick = (e) => {
+    const b = e.target.closest('[data-tool]'); if (!b) return;
+    modoEditor = b.dataset.tool;
+    if (modoEditor === 'poly') polyTemp = [];
+    modal.querySelectorAll('#ph-ed-tools [data-tool]').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+    poblarEditor();
+  };
+  document.getElementById('ph-hatch-sel').onchange = (e) => {
+    hatchActivo = e.target.value;
+    modoEditor = 'hatch';
+    modal.querySelectorAll('#ph-ed-tools [data-tool]').forEach(x => { const on = x.dataset.tool === 'hatch'; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+    poblarEditor();
+  };
+  document.getElementById('ph-blq-bar').onclick = (e) => {
+    const b = e.target.closest('[data-add-blq]'); if (!b || !proyectoActivo) return;
     pushUndo();
-    const tipo = document.getElementById('ph-add-tipo').value;
+    const tipo = b.dataset.addBlq;
     const cat = CATALOGO_ELEMENTOS[tipo];
+    if (!cat) return;
     const nuevo = {
       id: 'el-' + (Date.now() % 100000), tipo, cat: cat.cat, n: cat.n,
       u: 0, v: 0, l: cat.l, w: cat.w, h: cat.h, rot: 0,
@@ -1073,41 +1212,40 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
     }
     proyectoActivo.elementos.push(nuevo);
     elemSelId = nuevo.id;
+    modoEditor = 'select';
+    modal.querySelectorAll('#ph-ed-tools [data-tool]').forEach(x => { const on = x.dataset.tool === 'select'; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
     recalcularYRender(false);
-  };
-  document.getElementById('ph-poly-btn').onclick = (e) => {
-    modoPoligono = !modoPoligono;
-    if (modoPoligono) polyTemp = [];
-    e.target.classList.toggle('on', modoPoligono);
-    e.target.setAttribute('aria-pressed', String(modoPoligono));
-    poblarEditor();
   };
   document.getElementById('ph-undo').onclick = () => {
     if (!undoStack.length || !proyectoActivo) return;
-    redoStack.push(JSON.stringify({ elementos: proyectoActivo.elementos, poligonoInterv: proyectoActivo.poligonoInterv }));
+    redoStack.push(snapState());
     const prev = JSON.parse(undoStack.pop());
-    proyectoActivo.elementos = prev.elementos; proyectoActivo.poligonoInterv = prev.poligonoInterv;
+    proyectoActivo.elementos = prev.elementos;
+    proyectoActivo.zonasRayado = prev.zonasRayado || [];
+    proyectoActivo.poligonoInterv = prev.poligonoInterv;
     elemSelId = null; recalcularYRender(false);
   };
   document.getElementById('ph-redo').onclick = () => {
     if (!redoStack.length || !proyectoActivo) return;
-    undoStack.push(JSON.stringify({ elementos: proyectoActivo.elementos, poligonoInterv: proyectoActivo.poligonoInterv }));
+    undoStack.push(snapState());
     const nxt = JSON.parse(redoStack.pop());
-    proyectoActivo.elementos = nxt.elementos; proyectoActivo.poligonoInterv = nxt.poligonoInterv;
+    proyectoActivo.elementos = nxt.elementos;
+    proyectoActivo.zonasRayado = nxt.zonasRayado || [];
+    proyectoActivo.poligonoInterv = nxt.poligonoInterv;
     elemSelId = null; recalcularYRender(false);
   };
   document.getElementById('ph-save-proj').onclick = () => {
     if (!parqueActivo || !proyectoActivo) return;
-    saved[parqueActivo.id] = { ...(saved[parqueActivo.id] || {}), cfg: { ...cfgActiva }, elementos: proyectoActivo.elementos, poligonoInterv: proyectoActivo.poligonoInterv };
+    saved[parqueActivo.id] = { ...(saved[parqueActivo.id] || {}), cfg: { ...cfgActiva }, elementos: proyectoActivo.elementos, zonasRayado: proyectoActivo.zonasRayado || [], poligonoInterv: proyectoActivo.poligonoInterv };
     persistir();
-    say(`💾 Proyecto guardado para ${parqueActivo.nombre}`, 2800);
+    say(`Proyecto guardado para ${parqueActivo.nombre}`, 2800);
     anunciar('Proyecto guardado.');
   };
   document.getElementById('ph-save-reg').onclick = () => {
     if (!parqueActivo) return;
     saved[parqueActivo.id] = { ...(saved[parqueActivo.id] || {}), cfg: { ...cfgActiva }, reg: { fecha: document.getElementById('ph-fecha').value, notas: document.getElementById('ph-notas').value } };
     persistir();
-    say(`💾 Registro de campo guardado para ${parqueActivo.nombre}`, 2600);
+    say(`Registro de campo guardado para ${parqueActivo.nombre}`, 2600);
   };
 
   modal.addEventListener('click', (e) => {
@@ -1159,7 +1297,7 @@ export async function crearParquesHuertas({ THREE, T3, lw, say = () => {} }) {
         } else {
           actualizarPanelUI();
         }
-        say(`🌳 ${PARQUES.length} parques de Kennedy · Parque piloto: ${parqueActivo.nombre}`, 4200);
+        say(`${PARQUES.length} parques de Kennedy · Parque piloto: ${parqueActivo.nombre}`, 4200);
       } else {
         if (playTimer) { clearInterval(playTimer); playTimer = 0; }
         if (modal.open) modal.close();

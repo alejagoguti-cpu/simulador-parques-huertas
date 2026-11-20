@@ -378,6 +378,7 @@ export function generarProyecto(park, diag, rawCfg = {}, sitioForzado = null) {
     cfg, tipologia: tipoObj, park, orientAng,
     sitio: sitioForzado || (park && park.sitio) || (park && park.c) || [0, 0],
     poligonoInterv: [[uMin, vMin], [uMax, vMin], [uMax, vMax], [uMin, vMax]],
+    zonasRayado: [],
     dims: { totalL, totalW, areaTotal: +(totalL * totalW).toFixed(1), uMin, uMax, vMin, vMax, dripLines, paso, cab },
     elementos,
     infra: { acceso, tomaAgua, invernadero, abonera, resguardo, frutales, aromaticas, cortaviento, triangulo345 },

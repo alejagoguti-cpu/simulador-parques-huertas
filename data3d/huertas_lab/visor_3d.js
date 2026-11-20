@@ -13,12 +13,13 @@
      5) Transformación progresiva de materia orgánica en las 3 bahías de la abonera. */
 
 import { ESPECIES } from './datos_agronomia.js?v=1';
+import { HATCHES_RAYON } from './planos_export.js?v=2';
 
 const TIPO_COL = {
-  'PARQUE METROPOLITANO': '#34d399',
-  'PARQUE ZONAL': '#60a5fa',
-  'PARQUE VECINAL': '#a3e635',
-  'PARQUE DE BOLSILLO': '#fbbf24'
+  'PARQUE METROPOLITANO': '#4d9e74',
+  'PARQUE ZONAL': '#5b8fb9',
+  'PARQUE VECINAL': '#7ba65b',
+  'PARQUE DE BOLSILLO': '#c79b52'
 };
 
 export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) {
@@ -124,7 +125,7 @@ export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) 
   const limpiar = (gr) => {
     while (gr.children.length) {
       const ch = gr.children.pop();
-      if (ch.geometry) ch.geometry.dispose();
+      if (ch.geometry && !ch.geometry.userData?.shared) ch.geometry.dispose();
       if (ch.material) {
         if (Array.isArray(ch.material)) ch.material.forEach(m => m.dispose());
         else ch.material.dispose();
@@ -194,20 +195,194 @@ export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) 
     const obj = new THREE.Object3D(), col = new THREE.Color();
     const im = new THREE.InstancedMesh(
       new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2),
-      new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.34, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -4 }),
+      new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.21, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -4 }),
       diag.celdas.length
     );
     diag.celdas.forEach((c, i) => {
       obj.position.set(c.x, YG() + 0.12, c.z);
       obj.rotation.set(0, 0, 0);
-      obj.scale.set(c.s * 0.88, 1, c.s * 0.88);
+      obj.scale.set(c.s * 0.92, 1, c.s * 0.92);
       obj.updateMatrix();
       im.setMatrixAt(i, obj.matrix);
-      im.setColorAt(i, col.set(c.clase === 'apta' ? '#22c55e' : c.clase === 'cond' ? '#f59e0b' : '#ef4444'));
+      im.setColorAt(i, col.set(c.clase === 'apta' ? '#529e6c' : c.clase === 'cond' ? '#cfa459' : '#c27168'));
     });
     im.renderOrder = 6;
     gAptitud.add(im);
   }
+
+  /* ---------- Generador botánico 3D reconocible por especie (geometrías compuestas con vertexColors) ---------- */
+  const vegGeoCache = new Map();
+  function mergeParts(parts) {
+    let totalVerts = 0;
+    const norm = parts.map(({ g, col }) => {
+      const ng = g.index ? g.toNonIndexed() : g;
+      if (!ng.attributes.normal) ng.computeVertexNormals();
+      totalVerts += ng.attributes.position.count;
+      return { g: ng, c: new THREE.Color(col) };
+    });
+    const pos = new Float32Array(totalVerts * 3);
+    const nrm = new Float32Array(totalVerts * 3);
+    const clr = new Float32Array(totalVerts * 3);
+    let off = 0;
+    for (const { g, c } of norm) {
+      const p = g.attributes.position.array;
+      const n = g.attributes.normal.array;
+      const cnt = g.attributes.position.count;
+      pos.set(p, off * 3);
+      nrm.set(n, off * 3);
+      for (let i = 0; i < cnt; i++) {
+        clr[(off + i) * 3] = c.r;
+        clr[(off + i) * 3 + 1] = c.g;
+        clr[(off + i) * 3 + 2] = c.b;
+      }
+      off += cnt;
+      g.dispose();
+    }
+    const out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    out.setAttribute('normal', new THREE.BufferAttribute(nrm, 3));
+    out.setAttribute('color', new THREE.BufferAttribute(clr, 3));
+    out.userData = { shared: true };
+    return out;
+  }
+
+  function crearGeoVegetal3D(esp) {
+    const key = `${esp.tipo3d}_${esp.n}_${esp.c}`;
+    if (vegGeoCache.has(key)) return vegGeoCache.get(key);
+    const parts = [];
+    const t = esp.tipo3d || 'roseta';
+    const c1 = esp.c || '#4e8a48';
+    const c2 = esp.c2 || '#72ab60';
+
+    if (t === 'roseta') {
+      // Lechuga crespa / Espinaca: 2 coronas de hojas ahuecadas reales + corazón claro
+      for (let k = 0; k < 7; k++) {
+        const a = (k / 7) * Math.PI * 2;
+        const leaf = new THREE.SphereGeometry(0.11, 6, 5).scale(0.92, 0.22, 1.35);
+        leaf.rotateX(0.45);
+        leaf.translate(0, 0.08, 0.11);
+        leaf.rotateY(a);
+        parts.push({ g: leaf, col: c1 });
+      }
+      for (let k = 0; k < 5; k++) {
+        const a = (k / 5) * Math.PI * 2 + 0.4;
+        const leaf = new THREE.SphereGeometry(0.08, 6, 4).scale(0.85, 0.28, 1.15);
+        leaf.rotateX(0.75);
+        leaf.translate(0, 0.11, 0.055);
+        leaf.rotateY(a);
+        parts.push({ g: leaf, col: c2 });
+      }
+      parts.push({ g: new THREE.SphereGeometry(0.055, 6, 5).scale(1, 0.85, 1).translate(0, 0.09, 0), col: '#d4e8b8' });
+    } else if (t === 'hojaAlta') {
+      // Acelga: pencas blancas erguidas + láminas verdes anchas y rizadas
+      for (let k = 0; k < 6; k++) {
+        const a = (k / 6) * Math.PI * 2;
+        const penca = new THREE.CylinderGeometry(0.011, 0.016, 0.20, 5).rotateX(0.24).translate(0, 0.10, 0.035).rotateY(a);
+        const lamina = new THREE.SphereGeometry(0.095, 6, 5).scale(0.82, 0.16, 1.55).rotateX(0.65).translate(0, 0.24, 0.09).rotateY(a);
+        parts.push({ g: penca, col: '#f2efe4' }, { g: lamina, col: k % 2 ? c1 : c2 });
+      }
+    } else if (t === 'repollo') {
+      // Repollo / Brócoli / Coliflor: hojas exteriores abiertas + cogollo o inflorescencia multi-florete
+      const esBro = /brócoli/i.test(esp.n);
+      const esColi = /coliflor/i.test(esp.n);
+      for (let k = 0; k < 6; k++) {
+        const a = (k / 6) * Math.PI * 2;
+        const wrap = new THREE.SphereGeometry(0.13, 6, 5).scale(1.0, 0.20, 1.35).rotateX(0.36).translate(0, 0.10, 0.13).rotateY(a);
+        parts.push({ g: wrap, col: c1 });
+      }
+      if (esBro || esColi) {
+        const fCol = esColi ? '#f3efe0' : '#2e693c';
+        parts.push({ g: new THREE.CylinderGeometry(0.032, 0.04, 0.14, 6).translate(0, 0.07, 0), col: '#6d9964' });
+        for (let f = 0; f < 7; f++) {
+          const fa = (f / 6) * Math.PI * 2;
+          const r = f === 0 ? 0 : 0.062;
+          const fl = new THREE.IcosahedronGeometry(f === 0 ? 0.072 : 0.056, 1).translate(Math.cos(fa) * r, f === 0 ? 0.19 : 0.16, Math.sin(fa) * r);
+          parts.push({ g: fl, col: fCol });
+        }
+      } else {
+        parts.push({ g: new THREE.SphereGeometry(0.12, 9, 7).scale(1.05, 0.92, 1.05).translate(0, 0.13, 0), col: '#bcd6a7' });
+      }
+    } else if (t === 'tutor') {
+      // Tomate / Ají / Arveja / Haba: tallo central + 4 pisos de ramas con follaje compuesto natural
+      const h = Math.min(1.35, Math.max(0.7, esp.h || 1.1));
+      parts.push({ g: new THREE.CylinderGeometry(0.015, 0.022, h * 0.88, 6).translate(0, h * 0.44, 0), col: '#3c6e35' });
+      for (let tier = 0; tier < 4; tier++) {
+        const y = h * (0.22 + tier * 0.18);
+        const rad = 0.15 + (1 - tier / 5) * 0.08;
+        for (let b = 0; b < 3; b++) {
+          const a = tier * 1.1 + (b / 3) * Math.PI * 2;
+          const twig = new THREE.CylinderGeometry(0.006, 0.009, rad, 4).rotateX(Math.PI / 2 - 0.32).translate(0, y, rad * 0.45).rotateY(a);
+          const lf1 = new THREE.SphereGeometry(0.072, 5, 4).scale(0.85, 0.18, 1.4).rotateX(0.25).translate(0, y + 0.03, rad * 0.82).rotateY(a);
+          const lf2 = new THREE.SphereGeometry(0.055, 5, 4).scale(0.8, 0.18, 1.25).rotateZ(0.3).translate(0.055, y + 0.02, rad * 0.52).rotateY(a);
+          parts.push({ g: twig, col: '#3e6e36' }, { g: lf1, col: c1 }, { g: lf2, col: c2 });
+        }
+      }
+    } else if (t === 'raiz' || t === 'fina') {
+      // Zanahoria / Rábano / Remolacha: hombro de raíz visible en tierra + penacho de 8 frondas arqueadas
+      const rootCol = esp.fr || '#df7426';
+      parts.push({ g: new THREE.SphereGeometry(0.044, 7, 5).scale(1, 0.72, 1).translate(0, 0.025, 0), col: rootCol });
+      for (let k = 0; k < 8; k++) {
+        const a = (k / 8) * Math.PI * 2;
+        const frond = new THREE.ConeGeometry(0.026, 0.24, 4).scale(0.65, 1, 1.2).rotateX(0.42).translate(0, 0.12, 0.055).rotateY(a);
+        parts.push({ g: frond, col: k % 2 ? c1 : c2 });
+      }
+    } else if (t === 'tira') {
+      // Cebolla larga: cuello blanco + 7 tallos tubulares verdes erguidos
+      parts.push({ g: new THREE.CylinderGeometry(0.024, 0.030, 0.07, 6).translate(0, 0.035, 0), col: '#f2f0e6' });
+      for (let k = 0; k < 7; k++) {
+        const a = (k / 7) * Math.PI * 2;
+        const tilt = 0.08 + (k % 3) * 0.07;
+        const h = 0.30 + (k % 3) * 0.06;
+        const stalk = new THREE.CylinderGeometry(0.005, 0.011, h, 5).rotateX(tilt).translate(0, h / 2 + 0.04, 0.016).rotateY(a);
+        parts.push({ g: stalk, col: k % 2 ? c1 : c2 });
+      }
+    } else if (t === 'rastrero') {
+      // Calabacín / Ahuyama: 5 grandes hojas palmadas sobre peciolos inclinados + flor amarilla abierta
+      for (let k = 0; k < 5; k++) {
+        const a = (k / 5) * Math.PI * 2;
+        const pet = new THREE.CylinderGeometry(0.01, 0.014, 0.22, 4).rotateX(0.75).translate(0, 0.10, 0.09).rotateY(a);
+        const leaf = new THREE.CylinderGeometry(0.16, 0.13, 0.022, 5).scale(1.15, 1, 0.95).rotateX(0.22).translate(0, 0.19, 0.22).rotateY(a);
+        parts.push({ g: pet, col: '#4a7a42' }, { g: leaf, col: k % 2 ? c1 : c2 });
+      }
+      parts.push({ g: new THREE.ConeGeometry(0.048, 0.07, 6).rotateX(Math.PI).translate(0.05, 0.13, 0.04), col: '#e8b931' });
+    } else if (t === 'maiz') {
+      // Maíz: caña alta + 6 hojas largas arqueadas alternas + espiga dorada superior
+      parts.push({ g: new THREE.CylinderGeometry(0.018, 0.028, 1.55, 6).translate(0, 0.77, 0), col: '#5a8744' });
+      for (let k = 0; k < 6; k++) {
+        const y = 0.32 + k * 0.19;
+        const a = k * 2.1;
+        const blade = new THREE.BoxGeometry(0.055, 0.012, 0.42).rotateX(0.45).translate(0, y, 0.18).rotateY(a);
+        parts.push({ g: blade, col: k % 2 ? c1 : c2 });
+      }
+      parts.push({ g: new THREE.ConeGeometry(0.035, 0.22, 5).translate(0, 1.62, 0), col: '#d4b45c' });
+    } else {
+      // Aromáticas: mata ramosa con hojas finas y espigas florales
+      for (let k = 0; k < 7; k++) {
+        const a = (k / 7) * Math.PI * 2;
+        const stem = new THREE.ConeGeometry(0.055, 0.26, 5).rotateX(0.25).translate(0, 0.13, 0.06).rotateY(a);
+        parts.push({ g: stem, col: k % 2 ? c1 : c2 });
+        if (esp.fr && k % 2 === 0) {
+          parts.push({ g: new THREE.SphereGeometry(0.028, 5, 4).translate(0, 0.28, 0.09).rotateY(a), col: esp.fr });
+        }
+      }
+    }
+    const geo = mergeParts(parts);
+    vegGeoCache.set(key, geo);
+    return geo;
+  }
+
+  // Geometría de copa de árbol arquitectónico (3 lóbulos naturales en vez de un poliedro suelto)
+  const geoCopaArb = mergeParts([
+    { g: new THREE.IcosahedronGeometry(0.78, 1).scale(1.12, 0.85, 1.05).translate(0, 0.12, 0), col: '#4a7c45' },
+    { g: new THREE.IcosahedronGeometry(0.58, 1).scale(1.05, 0.82, 1.0).translate(0.42, -0.05, 0.24), col: '#5c8f52' },
+    { g: new THREE.IcosahedronGeometry(0.55, 1).scale(1.0, 0.82, 1.08).translate(-0.38, -0.08, -0.22), col: '#3e6e3b' }
+  ]);
+  const geoMataPol = mergeParts([
+    { g: new THREE.SphereGeometry(0.16, 6, 5).scale(1.2, 0.72, 1.1).translate(0, 0.11, 0), col: '#4f7a4c' },
+    { g: new THREE.CylinderGeometry(0.015, 0.02, 0.24, 5).translate(0.06, 0.24, 0.04), col: '#7c65a8' },
+    { g: new THREE.CylinderGeometry(0.015, 0.02, 0.22, 5).translate(-0.07, 0.22, -0.04), col: '#d49a38' },
+    { g: new THREE.CylinderGeometry(0.014, 0.02, 0.20, 5).translate(0.02, 0.21, -0.08), col: '#c46c84' }
+  ]);
 
   /* ---------- 3. Renderizado 3D completo de la Huerta + Animaciones de Procesos ---------- */
   let pickElementos = [];
@@ -264,17 +439,29 @@ export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) 
     piso.position.y = 0.04; piso.receiveShadow = true;
     cSuelo.add(piso);
 
+    // Bloques / zonas de rayado personalizadas por el usuario (Estilo Rayon sincronizado 2D <-> 3D)
+    for (const z of (proyecto.zonasRayado || [])) {
+      const hDef = HATCHES_RAYON[z.hatch] || HATCHES_RAYON.prado;
+      const matZ = z.hatch === 'madera' ? mStd('#ffffff', { map: TEX.madera, roughness: 0.88 })
+        : z.hatch === 'adoquin' ? mStd('#ffffff', { map: TEX.adoquin, roughness: 0.92 })
+        : z.hatch === 'tierra' ? mStd('#ffffff', { map: TEX.tierra, roughness: 0.98 })
+        : z.hatch === 'agua' ? new THREE.MeshStandardMaterial({ color: hDef.col3d, transparent: true, opacity: 0.65, roughness: 0.2 })
+        : mStd(hDef.col3d, { roughness: 0.92 });
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(z.l, z.hatch === 'madera' ? 0.10 : 0.05, z.w), matZ);
+      plate.position.set(z.u, z.hatch === 'madera' ? 0.09 : 0.065, z.v);
+      plate.rotation.y = -(z.rot || 0);
+      plate.receiveShadow = true;
+      plate.userData.el = z;
+      cSuelo.add(plate);
+    }
+
     if (cfg.mapaSolar) {
-      const mS = new THREE.Mesh(new THREE.PlaneGeometry(dims.totalL - 0.8, dims.totalW * 0.48).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#f59e0b', transparent: true, opacity: 0.11, depthWrite: false, toneMapped: false }));
-      mS.position.set(0, 0.06, dims.totalW * 0.24);
-      const mN = new THREE.Mesh(new THREE.PlaneGeometry(dims.totalL - 0.8, dims.totalW * 0.48).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#10b981', transparent: true, opacity: 0.1, depthWrite: false, toneMapped: false }));
-      mN.position.set(0, 0.06, -dims.totalW * 0.24);
-      cSuelo.add(mS, mN);
+      // Indicador solar arquitectónico sutil (sin bloques neón invasivos)
       const bruj = new THREE.Group();
-      bruj.position.set(dims.uMax + 2.1, 0.14, dims.vMin + 1.8);
+      bruj.position.set(dims.uMax + 2.0, 0.14, dims.vMin + 1.6);
       bruj.rotation.y = orientAng;
-      const aro = new THREE.Mesh(new THREE.RingGeometry(0.95, 1.15, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#e2a55b', side: THREE.DoubleSide, toneMapped: false }));
-      const fl = new THREE.Mesh(new THREE.ShapeGeometry(new THREE.Shape([new THREE.Vector2(0, 1.05), new THREE.Vector2(0.32, -0.35), new THREE.Vector2(0, -0.1), new THREE.Vector2(-0.32, -0.35)])).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#f59e0b', side: THREE.DoubleSide, toneMapped: false }));
+      const aro = new THREE.Mesh(new THREE.RingGeometry(0.85, 0.96, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#c8a978', side: THREE.DoubleSide, toneMapped: false }));
+      const fl = new THREE.Mesh(new THREE.ShapeGeometry(new THREE.Shape([new THREE.Vector2(0, 0.9), new THREE.Vector2(0.24, -0.28), new THREE.Vector2(0, -0.08), new THREE.Vector2(-0.24, -0.28)])).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#d49a45', side: THREE.DoubleSide, toneMapped: false }));
       bruj.add(aro, fl); cSuelo.add(bruj);
     }
 
@@ -387,37 +574,47 @@ export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) 
         }
         const nP = pts.length;
         if (nP) {
-          let gVeg;
-          if (esp.tipo3d === 'maiz') gVeg = new THREE.ConeGeometry(0.16, 1.65, 5).translate(0, 0.85, 0);
-          else if (esp.tipo3d === 'tutor') gVeg = new THREE.CylinderGeometry(0.13, 0.19, esp.h * 0.85, 6).translate(0, esp.h * 0.44, 0);
-          else if (esp.tipo3d === 'repollo') gVeg = new THREE.IcosahedronGeometry(0.17, 1).scale(1.1, 0.85, 1.1).translate(0, 0.14, 0);
-          else if (esp.tipo3d === 'hojaAlta') gVeg = new THREE.ConeGeometry(0.14, 0.36, 6).rotateX(Math.PI).translate(0, 0.18, 0);
-          else if (esp.tipo3d === 'tira' || esp.tipo3d === 'fina' || esp.tipo3d === 'raiz') gVeg = new THREE.ConeGeometry(0.08, esp.h, 5).translate(0, esp.h / 2, 0);
-          else gVeg = new THREE.DodecahedronGeometry(0.14, 0).scale(1.15, 0.72, 1.15).translate(0, 0.10, 0);
-
-          const imV = new THREE.InstancedMesh(gVeg, mStd('#ffffff', { roughness: 0.78 }), nP);
+          const gVeg = crearGeoVegetal3D(esp);
+          const imV = new THREE.InstancedMesh(gVeg, mStd('#ffffff', { vertexColors: true, roughness: 0.78 }), nP);
           pts.forEach(([du, dv], i) => {
             obj.position.set(du, 0, dv); obj.rotation.set(0, (i * 2.399) % 6.28, 0);
-            const k = 0.86 + (i % 4) * 0.08; obj.scale.set(k, k, k); obj.updateMatrix();
+            const k = 0.88 + (i % 4) * 0.07; obj.scale.set(k, k, k); obj.updateMatrix();
             imV.setMatrixAt(i, obj.matrix);
-            imV.setColorAt(i, colTmp.set(i % 2 ? esp.c : esp.c2));
           });
+          imV.castShadow = true;
           gp.add(imV);
 
-          // Tutores de caña (fijos en la cama) para tomate/arveja
+          // Tutores de caña natural (fijos en la cama) para tomate/arveja/haba
           if (esp.tipo3d === 'tutor') {
-            const imT = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.016, 0.02, esp.h, 5).translate(0, esp.h / 2, 0), mStd('#a68b5b'), nP);
-            pts.forEach(([du, dv], i) => { obj.position.set(du, 0, dv); obj.rotation.set(0, 0, 0); obj.scale.setScalar(1); obj.updateMatrix(); imT.setMatrixAt(i, obj.matrix); });
+            const imT = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.015, 0.019, esp.h, 6).translate(0, esp.h / 2, 0), mStd('#a88d62', { roughness: 0.9 }), nP);
+            pts.forEach(([du, dv], i) => { obj.position.set(du + 0.03, 0, dv + 0.02); obj.rotation.set(0, 0, 0); obj.scale.setScalar(1); obj.updateMatrix(); imT.setMatrixAt(i, obj.matrix); });
             eg.add(imT);
             imT.position.y = yTop;
           }
-          // Frutos/flores que aparecen solo en fase de floración-cosecha!
-          if (esp.fr) {
-            const gFr = esp.tipo3d === 'maiz'
-              ? new THREE.CapsuleGeometry(0.04, 0.14, 4, 6).translate(0, 1.15, 0)
-              : new THREE.SphereGeometry(esp.tipo3d === 'rastrero' ? 0.14 : 0.06, 7, 5).translate(0, Math.min(0.88, esp.h * 0.65), 0);
-            const imF = new THREE.InstancedMesh(gFr, mStd(esp.fr, { roughness: 0.45 }), nP);
-            pts.forEach(([du, dv], i) => { obj.position.set(du, 0, dv); obj.rotation.set(0, i, 0); obj.scale.setScalar(1); obj.updateMatrix(); imF.setMatrixAt(i, obj.matrix); });
+          // Racimos de frutos/flores botánicos (visibles solo en floración-cosecha!)
+          if (esp.fr && esp.tipo3d !== 'raiz' && esp.tipo3d !== 'fina') {
+            const frParts = [];
+            if (esp.tipo3d === 'maiz') {
+              frParts.push({ g: new THREE.CapsuleGeometry(0.036, 0.14, 4, 6).rotateZ(0.32).translate(0.06, 0.95, 0.02), col: esp.fr });
+              frParts.push({ g: new THREE.CapsuleGeometry(0.032, 0.12, 4, 6).rotateZ(-0.28).translate(-0.05, 0.78, -0.02), col: esp.fr });
+            } else if (esp.tipo3d === 'rastrero') {
+              // Calabacín / ahuyama apoyado sobre el sustrato
+              frParts.push({ g: new THREE.CapsuleGeometry(0.055, 0.18, 5, 7).rotateZ(Math.PI / 2).translate(0.12, 0.06, 0.05), col: esp.fr });
+            } else if (esp.tipo3d === 'tutor') {
+              // Racimo realista de 4 tomates/vainas colgando en distintos niveles
+              const hy = Math.min(0.95, (esp.h || 1.1) * 0.62);
+              frParts.push(
+                { g: new THREE.SphereGeometry(0.038, 7, 5).translate(0.11, hy, 0.04), col: esp.fr },
+                { g: new THREE.SphereGeometry(0.034, 7, 5).translate(-0.09, hy - 0.12, 0.07), col: esp.fr },
+                { g: new THREE.SphereGeometry(0.036, 7, 5).translate(0.04, hy - 0.24, -0.10), col: esp.fr },
+                { g: new THREE.SphereGeometry(0.032, 7, 5).translate(-0.07, hy + 0.11, -0.06), col: esp.fr }
+              );
+            } else {
+              frParts.push({ g: new THREE.SphereGeometry(0.032, 6, 5).translate(0.04, Math.min(0.45, esp.h * 0.72), 0.03), col: esp.fr });
+            }
+            const gFr = mergeParts(frParts);
+            const imF = new THREE.InstancedMesh(gFr, mStd('#ffffff', { vertexColors: true, roughness: 0.42 }), nP);
+            pts.forEach(([du, dv], i) => { obj.position.set(du, 0, dv); obj.rotation.set(0, i * 1.9, 0); obj.scale.setScalar(1); obj.updateMatrix(); imF.setMatrixAt(i, obj.matrix); });
             gf.add(imF);
           }
           animState.cultivosAnim.push({ grp: gp, esp });
@@ -512,12 +709,17 @@ export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) 
       } else if (el.tipo === 'polinizadores') {
         cPlantas.add(eg);
         const b = new THREE.Mesh(new THREE.BoxGeometry(el.l, 0.22, el.w), mStd('#ffffff', { map: TEX.piedra })); b.position.y = 0.12; b.userData.el = el; eg.add(b); pickElementos.push(b);
-        const flCols = ['#a855f7', '#f59e0b', '#ec4899', '#facc15', '#38bdf8'];
-        for (let i = 0; i < 16; i++) {
-          const fl = new THREE.Mesh(new THREE.DodecahedronGeometry(0.24, 0), mStd(flCols[i % flCols.length]));
-          fl.position.set(((i % 4) - 1.5) * (el.l / 4.4), 0.36 + (i % 2) * 0.12, (Math.floor(i / 4) - 1.5) * (el.w / 4.4));
-          eg.add(fl);
+        const tP = new THREE.Mesh(new THREE.BoxGeometry(el.l - 0.16, 0.12, el.w - 0.16), matTierra); tP.position.y = 0.21; eg.add(tP);
+        const nM = 16;
+        const imPol = new THREE.InstancedMesh(geoMataPol, mStd('#ffffff', { vertexColors: true, roughness: 0.84 }), nM);
+        for (let i = 0; i < nM; i++) {
+          obj.position.set(((i % 4) - 1.5) * (el.l / 4.4), 0.24, (Math.floor(i / 4) - 1.5) * (el.w / 4.4));
+          obj.rotation.set(0, i * 1.4, 0);
+          obj.scale.setScalar(0.95 + (i % 3) * 0.18);
+          obj.updateMatrix();
+          imPol.setMatrixAt(i, obj.matrix);
         }
+        eg.add(imPol);
       } else if (el.tipo === 'infiltracion') {
         cInfra.add(eg);
         const zj = new THREE.Mesh(new THREE.BoxGeometry(el.l, 0.08, el.w), mStd('#78716c', { map: TEX.piedra })); zj.position.y = 0.06; zj.userData.el = el;
@@ -584,23 +786,30 @@ export function crearVisor3D({ THREE, T3, PARQUES, onPickPark, onPickElement }) 
       }
     }
 
-    // Aromáticas perimetrales, frutales laterales y cortina cortavientos Sur–Oeste
+    // Aromáticas perimetrales, frutales laterales y cortina cortavientos Sur–Oeste (arquitectónicos, sin poliedros neón)
     if (infra.aromaticas.length) {
-      const imA = new THREE.InstancedMesh(new THREE.DodecahedronGeometry(0.30, 1).scale(1.1, 0.78, 1.1), mStd('#ffffff', { roughness: 0.82 }), infra.aromaticas.length);
-      const palA = ['#6d8c52', '#7c65a8', '#eab308', '#4d7c4f', '#9333ea'];
-      infra.aromaticas.forEach((a, i) => { obj.position.set(a.u, 0.26, a.v); obj.rotation.set(0, i, 0); obj.scale.setScalar(0.85 + (i % 3) * 0.14); obj.updateMatrix(); imA.setMatrixAt(i, obj.matrix); imA.setColorAt(i, colTmp.set(palA[i % palA.length])); });
+      const imA = new THREE.InstancedMesh(geoMataPol, mStd('#ffffff', { vertexColors: true, roughness: 0.85 }), infra.aromaticas.length);
+      infra.aromaticas.forEach((a, i) => { obj.position.set(a.u, 0.04, a.v); obj.rotation.set(0, i * 1.7, 0); obj.scale.setScalar(1.05 + (i % 3) * 0.18); obj.updateMatrix(); imA.setMatrixAt(i, obj.matrix); });
       cBorde.add(imA);
     }
     if (infra.frutales.length) {
-      const tr = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.06, 0.09, 1.35, 6).translate(0, 0.68, 0), mStd('#6e4e35'), infra.frutales.length);
-      const cp = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.86, 1).scale(1.05, 0.92, 1.05).translate(0, 1.85, 0), mStd('#4d8538', { roughness: 0.85 }), infra.frutales.length);
-      infra.frutales.forEach((f, i) => { obj.position.set(f.u, 0.04, f.v); obj.rotation.set(0, i, 0); obj.scale.setScalar(0.85 + (i % 3) * 0.14); obj.updateMatrix(); tr.setMatrixAt(i, obj.matrix); cp.setMatrixAt(i, obj.matrix); });
+      const tr = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.055, 0.085, 1.35, 7).translate(0, 0.68, 0), mStd('#6e4e35'), infra.frutales.length);
+      const cp = new THREE.InstancedMesh(geoCopaArb, mStd('#ffffff', { vertexColors: true, roughness: 0.86 }), infra.frutales.length);
+      infra.frutales.forEach((f, i) => {
+        const s = 0.88 + (i % 3) * 0.14;
+        obj.position.set(f.u, 0.04, f.v); obj.rotation.set(0, i * 1.9, 0); obj.scale.setScalar(s); obj.updateMatrix(); tr.setMatrixAt(i, obj.matrix);
+        obj.position.set(f.u, 1.65 * s, f.v); obj.updateMatrix(); cp.setMatrixAt(i, obj.matrix);
+      });
       cp.castShadow = true; cBorde.add(tr, cp);
     }
     if (infra.cortaviento.length) {
-      const trC = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.11, 0.16, 2.2, 6).translate(0, 1.1, 0), mStd('#5c4028'), infra.cortaviento.length);
-      const cpC = new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1.42, 1).scale(1.05, 1.25, 1.05).translate(0, 3.3, 0), mStd('#2d6a36', { roughness: 0.88 }), infra.cortaviento.length);
-      infra.cortaviento.forEach((cv, i) => { obj.position.set(cv.u, 0.02, cv.v); obj.rotation.set(0, i * 2, 0); obj.scale.setScalar(0.88 + (i % 4) * 0.11); obj.updateMatrix(); trC.setMatrixAt(i, obj.matrix); cpC.setMatrixAt(i, obj.matrix); });
+      const trC = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.10, 0.15, 2.2, 7).translate(0, 1.1, 0), mStd('#5c4028'), infra.cortaviento.length);
+      const cpC = new THREE.InstancedMesh(geoCopaArb, mStd('#c8d9c4', { vertexColors: true, roughness: 0.88 }), infra.cortaviento.length);
+      infra.cortaviento.forEach((cv, i) => {
+        const s = 1.48 + (i % 4) * 0.14;
+        obj.position.set(cv.u, 0.02, cv.v); obj.rotation.set(0, i * 2.1, 0); obj.scale.setScalar(0.95 + (i % 3) * 0.1); obj.updateMatrix(); trC.setMatrixAt(i, obj.matrix);
+        obj.position.set(cv.u, 2.85, cv.v); obj.scale.set(s, s * 1.15, s); obj.updateMatrix(); cpC.setMatrixAt(i, obj.matrix);
+      });
       cpC.castShadow = true; cBorde.add(trC, cpC);
     }
 

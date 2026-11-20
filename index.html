@@ -3744,7 +3744,7 @@ if (KEN) { // simulación de Kennedy (data3d/giro_sim.js) dentro de la maqueta
     try {
       await esperarT3();
       if (!pParques) {
-        pParques = import('./data3d/parques_huertas.js?v=2').then(m => m.crearParquesHuertas({ THREE: T3.THREE, T3, lw, say }));
+        pParques = import('./data3d/parques_huertas.js?v=3').then(m => m.crearParquesHuertas({ THREE: T3.THREE, T3, lw, say }));
       }
       pqApi = await pParques;
       window.KEN_PARQUES = pqApi;
@@ -3753,7 +3753,7 @@ if (KEN) { // simulación de Kennedy (data3d/giro_sim.js) dentro de la maqueta
     } catch (e) {
       console.warn('parques y huertas:', e);
       sincParques(false);
-      say('⚠️ No cargó el módulo de parques y huertas', 4500);
+      say('No cargó el módulo de parques y huertas', 4500);
     }
   };
   const bp = document.getElementById('b-parques');
