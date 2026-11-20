@@ -642,7 +642,7 @@ export function renderPlanoCapaSVG(proyecto, capa = 'camas', diag = null, opts =
       capa === 'riego' ? (el.cat === 'cultivo' || el.tipo === 'agua' || el.tipo === 'infiltracion' || el.tipo === 'invernadero') :
       capa === 'residuos' ? (el.tipo === 'abonera' || el.tipo === 'residuos_sep' || el.tipo === 'lavado' || el.cat === 'cultivo') :
       true;
-    const op = emphasis ? 1 : 0.34;
+    const op = (opts.editor || capa === 'camas' || emphasis) ? 1 : 0.34;
     P.push(`<g transform="translate(${cx.toFixed(1)},${cy.toFixed(1)}) rotate(${deg.toFixed(1)})" opacity="${op}" data-elid="${esc(el.id)}" style="${opts.editor ? 'cursor:grab' : ''}">`);
     P.push(dibujarBloqueArquitectonico(el, bw, bh, PXM, cfg, capa, isSel, opts));
     if (isSel && opts.editor) {
