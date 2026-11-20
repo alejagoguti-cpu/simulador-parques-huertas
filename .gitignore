@@ -1,0 +1,14 @@
+splatwork/frames/
+splatwork/venv312/
+splatwork/sparse/
+splatwork/db.db
+splatwork/humedal.splat
+splatwork/__pycache__/
+
+tools/cache/
+
+unreal/**/cesium_ion_token.txt
+unreal/**/google_maps_key.txt
+unreal/**/Saved/
+unreal/**/Intermediate/
+unreal/**/Plugins/

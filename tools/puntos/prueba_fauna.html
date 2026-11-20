@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#0b0f0d;color:#ddd;font:12px sans-serif}canvas{display:block}</style></head><body>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { cargarFauna, puntosFauna } from '../../data3d/puntos/fauna_puntos.js';
+const ks = await cargarFauna(THREE, '../../data3d/puntos/fauna/');
+const R = new THREE.WebGLRenderer({ antialias: true }); R.setSize(1600, 600); document.body.appendChild(R.domElement);
+const S = new THREE.Scene(), cam = new THREE.PerspectiveCamera(30, 1600 / 600, 0.01, 100); cam.position.set(0, 2.2, 9); cam.lookAt(0, 0.3, 0);
+const uPx = { value: 600 };
+['colibri', 'mariposa', 'abeja', 'abejorro', 'mariquita', 'copeton', 'mirla'].forEach((k, i) => { const p = puntosFauna(THREE, k, uPx, 0.004); if (!p) return; p.position.x = -6 + i * 2; S.add(p);
+  const ax = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(-6 + i * 2, 0, 0), 0.8, 0xff3333); S.add(ax);
+  const d = document.createElement('div'); d.textContent = k; d.style.cssText = `position:absolute;left:${80 + i * 216}px;top:520px`; document.body.appendChild(d); });
+R.render(S, cam); window.LISTO = ks.join(',');
+</script></body></html>

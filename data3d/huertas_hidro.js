@@ -1,0 +1,360 @@
+/* ============ E8 · HUERTAS HIDROPÓNICAS EN CUBIERTAS Y BALCONES + RED DE POLINIZADORES (modo Kennedy) ============
+   Reemplaza la mancha de color de "Huertas en cubiertas de vivienda en altura" por instalaciones hidropónicas reales:
+   - racks NFT en A (tubos de PVC blanco con lechugas, acelgas y albahaca en sus canastillas), torres verticales aeropónicas,
+     túneles de policarbonato y el tanque de solución nutritiva de cada terraza
+   - jardineras hidropónicas colgadas en los balcones de los edificios de 4 pisos o más
+   - polinizadores y aliados de la huerta que llegan a ellas: colibrí chillón (Colibri coruscans), abeja de miel, mariposas
+     (Anartia amathea y Ascia monuste) y el copetón (Zonotrichia capensis), que come insectos y semillas de maleza.
+     Cada visita une la planta visitada con la anterior: la red de interacciones que conecta los edificios.
+   Para que cargue rápido: las instalaciones se calculan una vez y se dibujan solo las cercanas a lo que mira la cámara
+   (instancias), los techos lejanos conservan su capa verde. */
+export async function iniciarHidroponia({ THREE, T3, techos, movil = false }) {
+  const grupo = new THREE.Group(); grupo.name = 'huertas-hidroponicas'; grupo.visible = false; T3.scene.add(grupo);
+  const { mergeGeometries } = await import('three/addons/utils/BufferGeometryUtils.js');
+  let sem = 7; const rnd = () => ((sem = (sem * 16807) % 2147483647) / 2147483647);
+  const ANIS = Math.min(8, T3.renderer.capabilities.getMaxAnisotropy ? T3.renderer.capabilities.getMaxAnisotropy() : 4);
+  const lienzo = (w, h, f) => { const c = document.createElement('canvas'); c.width = w; c.height = h; f(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANIS; return t; };
+
+  // ---------- texturas: hojas de lechuga, acelga y albahaca vistas desde arriba (alfa) ----------
+  // hoja realista: lámina con degradado de la base a la punta, nervio central claro, borde algo más oscuro y sombra bajo las de encima
+  const hoja = (g, x, y, largo, ancho, ang, base, punta, nervio) => {
+    g.save(); g.translate(x, y); g.rotate(ang);
+    const gr = g.createLinearGradient(0, 0, largo, 0); gr.addColorStop(0, base); gr.addColorStop(1, punta);
+    g.fillStyle = 'rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(largo * 0.5 + 1.5, 2, largo * 0.5, ancho * 0.5, 0, 0, 7); g.fill(); // sombra
+    g.fillStyle = gr; g.beginPath(); g.moveTo(0, 0); g.bezierCurveTo(largo * 0.25, -ancho * 0.6, largo * 0.8, -ancho * 0.55, largo, 0); g.bezierCurveTo(largo * 0.8, ancho * 0.55, largo * 0.25, ancho * 0.6, 0, 0); g.fill();
+    g.strokeStyle = 'rgba(0,0,0,.18)'; g.lineWidth = 0.8; g.stroke();
+    g.strokeStyle = nervio; g.lineWidth = 1; g.beginPath(); g.moveTo(1, 0); g.lineTo(largo * 0.9, 0); g.stroke();
+    for (let k = 0.2; k < 0.85; k += 0.15) { g.beginPath(); g.moveTo(largo * k, 0); g.lineTo(largo * (k + 0.1), -ancho * 0.3); g.moveTo(largo * k, 0); g.lineTo(largo * (k + 0.1), ancho * 0.3); g.stroke(); }
+    g.restore();
+  };
+  // cultivos: [base, punta, nervio, nº de hojas, largo, ancho]: lechuga crespa, lechuga morada, acelga, albahaca, espinaca
+  const CULT = [['#5f8a3a', '#9cc06a', 'rgba(225,240,190,.6)', 14, 17, 12], ['#4d5a2e', '#8a3f52', 'rgba(230,200,210,.5)', 13, 16, 11], ['#3e6a2a', '#5f8e3c', 'rgba(220,90,90,.75)', 9, 21, 9], ['#3f6a2b', '#6f9a45', 'rgba(210,235,180,.5)', 16, 10, 6], ['#2f5222', '#55803a', 'rgba(200,225,170,.45)', 11, 15, 10]];
+  const roseta = (g, x, y, esc, t) => { const [b, p, n, nh, L, A] = CULT[t]; for (let k = 0; k < nh; k++) { const an = k * 2.399 + Math.random() * 0.3, f = 0.55 + 0.45 * (1 - k / nh); hoja(g, x, y, L * esc * f, A * esc * f, an, b, p, n); } };
+  const texPlantas = lienzo(512, 128, (g, w, h) => { // tira de 4 m de tubo NFT vista desde arriba: canastillas con su roseta
+    g.clearRect(0, 0, w, h);
+    for (let x = 18; x < w; x += 32) { const t = Math.floor(Math.random() * CULT.length); g.fillStyle = 'rgba(40,40,40,.9)'; g.beginPath(); g.arc(x, h / 2, 6, 0, 7); g.fill(); roseta(g, x, h / 2, 1.75 + Math.random() * 0.45, t); }
+  });
+  const texMata = lienzo(256, 256, (g, w, h) => { // matas de lado (torres y jardineras): hojas que cuelgan y algunas flores pequeñas
+    g.clearRect(0, 0, w, h);
+    for (let k = 0; k < 9; k++) roseta(g, w * (0.18 + 0.64 * Math.random()), h * (0.25 + 0.55 * Math.random()), 2.6 + Math.random() * 1.0, Math.floor(Math.random() * CULT.length));
+    for (let k = 0; k < 7; k++) { g.fillStyle = ['#e9d36a', '#f1efe6', '#c46a9a'][k % 3]; g.beginPath(); g.arc(w * (0.2 + 0.6 * Math.random()), h * (0.2 + 0.5 * Math.random()), 2.2, 0, 7); g.fill(); }
+  });
+  const matPVC = new THREE.MeshStandardMaterial({ color: 0xe2e1db, roughness: 0.62, metalness: 0.02 });
+  const matMetal = new THREE.MeshStandardMaterial({ color: 0x8e959b, roughness: 0.55, metalness: 0.55 });
+  const matPlanta = new THREE.MeshStandardMaterial({ map: texPlantas, alphaTest: 0.35, side: THREE.DoubleSide, roughness: 0.75 });
+  const matMata = new THREE.MeshStandardMaterial({ map: texMata, alphaTest: 0.35, side: THREE.DoubleSide, roughness: 0.75 });
+  const matTunel = new THREE.MeshStandardMaterial({ color: 0xeaf4ee, roughness: 0.25, transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false });
+  const matTanque = new THREE.MeshStandardMaterial({ color: 0x2f6fb0, roughness: 0.5 });
+  const matJard = new THREE.MeshStandardMaterial({ color: 0x5b4636, roughness: 0.85 });
+
+  // ---------- geometrías (1 unidad = 1 m) ----------
+  const caja = (sx, sy, sz, x, y, z) => new THREE.BoxGeometry(sx, sy, sz).translate(x, y, z);
+  const tubo = (L, r, x, y, z) => new THREE.CylinderGeometry(r * 1.4, r * 1.4, L, 8, 1).rotateZ(Math.PI / 2).translate(x, y, z);
+  // rack NFT en A: 4 m de largo (x), 3 niveles por lado, tubos de 11 cm
+  const nivelesA = [[0.35, 0.55], [0.85, 0.38], [1.35, 0.2]]; // [alto, distancia al eje]
+  const gRack = mergeGeometries([
+    ...[-1.9, 0, 1.9].flatMap(x => [caja(0.05, 1.6, 0.05, x, 0.8, -0.62).rotateX(0), caja(0.05, 1.6, 0.05, x, 0.8, 0.62)]).map((g, i) => g.rotateX(0)),
+    ...nivelesA.flatMap(([y, d]) => [tubo(4, 0.055, 0, y, -d), tubo(4, 0.055, 0, y, d)])
+  ]);
+  const gRackMetal = mergeGeometries([-1.9, 0, 1.9].map(x => new THREE.BufferGeometry().copy(caja(0.04, 0.04, 1.3, x, 1.5, 0))));
+  const gRackPl = mergeGeometries(nivelesA.flatMap(([y, d]) => [-1, 1].map(s => { const g = new THREE.PlaneGeometry(4, 0.62).rotateX(-Math.PI / 2 + s * 0.45); g.translate(0, y + 0.16, s * d); return g; })));
+  // torre vertical aeropónica: 1,9 m, con matas en cruz
+  const gTorre = mergeGeometries([new THREE.CylinderGeometry(0.11, 0.13, 1.9, 10).translate(0, 0.95, 0), new THREE.CylinderGeometry(0.28, 0.3, 0.32, 12).translate(0, 0.16, 0)]);
+  const gTorrePl = mergeGeometries([0, 1, 2].map(k => new THREE.PlaneGeometry(0.62, 1.75).rotateY(k * Math.PI / 3).translate(0, 1.0, 0)));
+  // túnel de policarbonato (8 m x 4 m, arco de 2,6 m) y tanque
+  const gTunel = new THREE.CylinderGeometry(2.1, 2.1, 8, 16, 1, true, -Math.PI / 2, Math.PI).rotateZ(Math.PI / 2).rotateX(0).scale(1, 1.2, 1);
+  const gTunelArcos = mergeGeometries([-4, -2, 0, 2, 4].map(x => new THREE.TorusGeometry(2.1, 0.03, 4, 16, Math.PI).rotateY(Math.PI / 2).scale(1, 1.2, 1).translate(x, 0, 0)));
+  const gTanque = new THREE.CylinderGeometry(0.7, 0.7, 1.3, 14).translate(0, 0.65, 0);
+  // jardinera de balcón: caja de 1,4 m colgada afuera del antepecho con matas y una franja hidropónica vertical
+  const gJard = caja(1.4, 0.4, 0.42, 0, 0.2, 0.25);
+  const gJardPl = mergeGeometries([new THREE.PlaneGeometry(1.5, 0.75).translate(0, 0.65, 0.25), new THREE.PlaneGeometry(1.5, 0.75).rotateY(Math.PI / 2.4).translate(0, 0.62, 0.25), new THREE.PlaneGeometry(0.5, 1.4).translate(0.95, 1.1, 0.06)]);
+
+  // ---------- dónde va cada instalación (una vez) ----------
+  const enPoli = (W, x, z) => { let c = false; for (let i = 0, j = W.length - 1; i < W.length; j = i++) { const a = W[i], b = W[j]; if ((a[1] > z) !== (b[1] > z) && x < (b[0] - a[0]) * (z - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+  const distBorde = (W, x, z) => { let m = 1e9; for (let i = 0, j = W.length - 1; i < W.length; j = i++) { const a = W[j], b = W[i], dx = b[0] - a[0], dz = b[1] - a[1], L2 = dx * dx + dz * dz || 1, t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[1]) * dz) / L2)); m = Math.min(m, Math.hypot(x - a[0] - t * dx, z - a[1] - t * dz)); } return m; };
+  const INST = { rack: [], torre: [], tunel: [], tanque: [], jard: [], caseta: [] }; // [x, y, z, rotY, celda]
+  const FLORES = []; // puntos que visitan los polinizadores: [x, y, z, tipo(0 techo, 1 balcón), techo]
+  const CELDA = 150, celdas = new Map(), clave = (x, z) => Math.floor(x / CELDA) + ',' + Math.floor(z / CELDA);
+  const VERDES = []; // [W, y, ti]: cubiertas con huerta que se pintan enteras de verde (techo vegetal)
+  let tiAct = 0; const TCEN = new Map(); // techo -> [x, y, z] (orden de apertura y resalte)
+  const meter = (k, x, y, z, r) => { const c = clave(x, z); INST[k].push([x, y, z, r, c, tiAct]); };
+  techos.forEach((t, ti) => {
+    const W = t.W, n = W.length; if (n < 3) return;
+    let cx = 0, cz = 0, A = 0, Lmax = 0, ang = 0;
+    for (let i = 0; i < n; i++) { const p = W[i], q = W[(i + 1) % n]; A += p[0] * q[1] - q[0] * p[1]; cx += p[0]; cz += p[1]; const l = Math.hypot(q[0] - p[0], q[1] - p[1]); if (l > Lmax) { Lmax = l; ang = Math.atan2(q[1] - p[1], q[0] - p[0]); } }
+    { let mejor = 1e18; for (let i = 0; i < n; i++) { const p = W[i], q = W[(i + 1) % n], a0 = Math.atan2(q[1] - p[1], q[0] - p[0]), c0 = Math.cos(a0), s0 = Math.sin(a0); let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9; for (const r of W) { const u = r[0] * c0 + r[1] * s0, v = -r[0] * s0 + r[1] * c0; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); } const ar = (u1 - u0) * (v1 - v0); if (ar < mejor - 1e-6) { mejor = ar; ang = (u1 - u0) >= (v1 - v0) ? a0 : a0 + Math.PI / 2; } } } // rectángulo mínimo: racks alineados con la cubierta
+    cx /= n; cz /= n; const area = Math.abs(A) / 2, y = t.h - 0.88; tiAct = ti; TCEN.set(ti, [cx, t.h, cz]); // sobre la losa, que queda 0,9 m bajo el remate del antepecho // sobre la capa de la cubierta de E8 (que se pinta 0,3 m sobre el techo)
+    if (area < 40) return;
+    const inclinado = window.esDosAguas && window.esDosAguas(W.map(q => [q[0], q[1]]), t.h); // casas a dos aguas: sin huerta
+    if (inclinado) return;
+    const ux = Math.cos(ang), uz = Math.sin(ang), vx = -uz, vz = ux, rot = -ang;
+    let caseta = null; if (t.h >= 16.5) { for (const f of [0, 0.25, -0.25, 0.45, -0.45]) { const x = cx + ux * f * 10, z = cz + uz * f * 10; if (enPoli(W, x, z) && distBorde(W, x, z) > 3.2) { caseta = [x, z]; meter('caseta', x, y, z, rot); break; } } }
+    // rejilla de racks a lo largo del eje largo: filas cada 2,6 m, racks de 4 m cada 4,8 m, a más de 1,2 m del antepecho
+    let puestos = 0; const max = Math.min(movil ? 10 : 34, Math.floor(area / 22)), tunel = area > 450 && rnd() < 0.45;
+    for (let v = -40; v <= 40 && puestos < max; v += 2.6) for (let u = -60; u <= 60 && puestos < max; u += 4.8) {
+      const x = cx + u * ux + v * vx, z = cz + u * uz + v * vz;
+      if (!enPoli(W, x, z) || distBorde(W, x, z) < (tunel && puestos < 2 ? 2.6 : 2.3) || (caseta && Math.hypot(x - caseta[0], z - caseta[1]) < 4.6)) continue;
+      if (tunel && puestos === 0) { meter('tunel', x, y, z, rot); puestos++; continue; }
+      if (rnd() < 0.3) { meter('torre', x - ux * 0.8, y, z - uz * 0.8, rot); meter('torre', x + ux * 0.8, y, z + uz * 0.8, rot); FLORES.push([x + ux * 0.8 + vx * 0.45, y + 1.25, z + uz * 0.8 + vz * 0.45, 0, ti, vx, vz]); }
+      else { meter('rack', x, y, z, rot); const sd = rnd() < 0.5 ? 1 : -1; FLORES.push([x + ux * (rnd() * 3 - 1.5) + vx * sd * 0.95, y + 1.0, z + uz * (rnd() * 3 - 1.5) + vz * sd * 0.95, 0, ti, vx * sd, vz * sd]); } // frente a las lechugas del nivel medio, por fuera del rack
+      puestos++;
+    }
+    if (puestos) { const x = cx - (ux + vx) * 1.2, z = cz - (uz + vz) * 1.2; if (enPoli(W, x, z)) meter('tanque', x, y, z, 0); VERDES.push([W, y, ti]); } // cubierta verde completa bajo la huerta
+    // balcones: edificios de 4 pisos o más, en los lados largos, una jardinera cada ~5 m en pisos alternos
+    if (t.h >= 16.5) { // balcones de las torres (las que se modelan también en Foto real)
+      const ccw = A > 0;
+      for (let i = 0; i < n; i++) {
+        const p = W[i], q = W[(i + 1) % n], L = Math.hypot(q[0] - p[0], q[1] - p[1]); if (L < 7) continue;
+        const dx = (q[0] - p[0]) / L, dz = (q[1] - p[1]) / L, nx = ccw ? dz : -dz, nz = ccw ? -dx : dx; // normal hacia afuera
+        const rotB = Math.atan2(nx, nz);
+        for (let piso = 1; piso * 3 + 1 < t.h - 2; piso++) for (let s = 2.5; s < L - 2; s += 5) {
+          if (rnd() > (movil ? 0.22 : 0.42)) continue;
+          const x = p[0] + dx * s + nx * 0.05, z = p[1] + dz * s + nz * 0.05, yy = piso * 3 + 0.95;
+          meter('jard', x, yy, z, rotB); if (rnd() < 0.5) FLORES.push([x + nx * 0.75, yy + 0.75, z + nz * 0.75, 1, ti, nx, nz]);
+        }
+      }
+    }
+  });
+  // índice espacial de flores (para que los polinizadores elijan la siguiente cerca)
+  /* APERTURA AÑO A AÑO (data3d/escenarios_sim.js llama fraccion(f)): las cubiertas se abren desde Bavaria Común hacia afuera, donde se forman
+     los promotores, con algo de azar; ORD[ti] en [0, 1] y solo se dibujan las cubiertas con ORD <= frac */
+  const ORD = new Map(); { const BAV = [4136, 96], L = [...new Set(Object.values(INST).flat().map(p => p[5]))].map(ti => { const c = TCEN.get(ti) || [0, 0, 0]; return [ti, Math.hypot(c[0] - BAV[0], c[2] - BAV[1]) * (0.75 + rnd() * 0.5)]; }).sort((a, b) => a[1] - b[1]);
+    L.forEach(([ti], i) => ORD.set(ti, L.length > 1 ? i / (L.length - 1) : 0)); }
+  let frac = 1;
+  /* CUBIERTA VERDE: cada techo con huerta queda entero de verde (techo vegetal de pasto y sedum entre los racks). Una sola malla para todos los
+     techos; cada vértice lleva el orden de apertura de su techo (aOrd) y el sombreador descarta los techos que aún no se abren (uFrac) */
+  const uFrac = { value: 1 };
+  if (VERDES.length) {
+    const geos = [];
+    for (const [W, y, ti] of VERDES) { try {
+      const g = new THREE.ShapeGeometry(new THREE.Shape(W.map(p => new THREE.Vector2(p[0], -p[1])))); g.rotateX(-Math.PI / 2); g.translate(0, y + 0.06, 0);
+      const pos = g.attributes.position, uv = new Float32Array(pos.count * 2), o = new Float32Array(pos.count).fill(ORD.get(ti) ?? 0);
+      for (let i = 0; i < pos.count; i++) { uv[i * 2] = pos.getX(i) / 4; uv[i * 2 + 1] = pos.getZ(i) / 4; }
+      g.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); g.setAttribute('aOrd', new THREE.BufferAttribute(o, 1)); if (g.index) geos.push(g.toNonIndexed()); else geos.push(g);
+    } catch (e) { /* techo con forma inválida */ } }
+    if (geos.length) {
+      const gV = mergeGeometries(geos.map(g => { for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'uv', 'aOrd'].includes(k)) g.deleteAttribute(k); return g; })); gV.computeVertexNormals();
+      const tex = new THREE.TextureLoader().load('data3d/textures/pasto_color.jpg'); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = ANIS;
+      const mV = new THREE.MeshStandardMaterial({ map: tex, color: 0xe4f7b0, emissive: 0x4f7a22, emissiveMap: tex, emissiveIntensity: 0.9, roughness: 0.95, metalness: 0, /* verde vivo que se lee desde lejos y a la sombra */ polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+      mV.onBeforeCompile = (sh) => { sh.uniforms.uFrac = uFrac;
+        sh.vertexShader = 'attribute float aOrd;\nvarying float vOrd;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvOrd = aOrd;');
+        sh.fragmentShader = 'uniform float uFrac;\nvarying float vOrd;\n' + sh.fragmentShader.replace('#include <clipping_planes_fragment>', '#include <clipping_planes_fragment>\nif (vOrd > uFrac) discard;'); };
+      mV.customProgramCacheKey = () => 'cubiertaVerde';
+      const techoV = new THREE.Mesh(gV, mV); techoV.receiveShadow = true; techoV.name = 'cubiertas-verdes'; grupo.add(techoV);
+    }
+  }
+  const FC = new Map(); FLORES.forEach((f, i) => { const c = clave(f[0], f[2]); if (!FC.has(c)) FC.set(c, []); FC.get(c).push(i); });
+
+  // ---------- instancias: solo las cercanas a lo que mira la cámara ----------
+  const CAP = movil ? { rack: 1400, torre: 900, tunel: 80, tanque: 200, jard: 1800, caseta: 120 } : { rack: 9000, torre: 5000, tunel: 400, tanque: 1100, jard: 10000, caseta: 600 };
+  // caseta del ascensor y la escalera: volumen de 4,4 x 3,4 m y 3,2 m de alto, con su puerta metálica de salida a la cubierta y alero
+  const gCaseta = new THREE.BoxGeometry(4.4, 3.2, 3.4).translate(0, 1.6, 0), gPuerta = mergeGeometries([new THREE.BoxGeometry(1.0, 2.1, 0.08).translate(0, 1.05, 1.72), new THREE.BoxGeometry(4.8, 0.14, 3.9).translate(0, 3.27, 0)]);
+  const matCaseta = new THREE.MeshStandardMaterial({ color: 0xd9d3c7, roughness: 0.9 }), matPuerta = new THREE.MeshStandardMaterial({ color: 0x5b6168, roughness: 0.5, metalness: 0.5 });
+  const capa = (k, partes) => partes.map(([g, m, sombra]) => { const im = new THREE.InstancedMesh(g, m, CAP[k]); im.count = 0; im.castShadow = !!sombra && !movil; im.frustumCulled = false; grupo.add(im); return im; });
+  const IM = {
+    rack: capa('rack', [[gRack, matPVC, true], [gRackMetal, matMetal], [gRackPl, matPlanta]]),
+    torre: capa('torre', [[gTorre, matPVC, true], [gTorrePl, matMata]]),
+    tunel: capa('tunel', [[gTunel, matTunel], [gTunelArcos, matMetal]]),
+    tanque: capa('tanque', [[gTanque, matTanque, true]]),
+    jard: capa('jard', [[gJard, matJard], [gJardPl, matMata]]),
+    caseta: capa('caseta', [[gCaseta, matCaseta, true], [gPuerta, matPuerta, true]])
+  };
+  const o3 = new THREE.Object3D(), foco = new THREE.Vector3();
+  let ultimo = null, sucioFrac = false, tFrac = 0;
+  let extra = 0;
+  function recalcular() {
+    if (T3.floresExtra && T3.floresExtra.length > extra) { for (const f of T3.floresExtra.slice(extra)) { const i = FLORES.length; FLORES.push(f); const kk = clave(f[0], f[2]); if (!FC.has(kk)) FC.set(kk, []); FC.get(kk).push(i); } extra = T3.floresExtra.length; } // flores de la huerta del Tintal
+    const c = T3.orbit ? T3.orbit.target : foco.set(0, 0, 0), R = (movil ? 420 : 750) + Math.min(900, T3.camera.position.distanceTo(c) * 0.5);
+    if (ultimo && ultimo.distanceTo(c) < R * 0.12) return; ultimo = (ultimo || new THREE.Vector3()).copy(c);
+    const r2 = R * R;
+    for (const k of Object.keys(IM)) {
+      let n = 0; const lista = INST[k].filter(p => ORD.get(p[5]) <= frac && (p[0] - c.x) ** 2 + (p[2] - c.z) ** 2 < r2).sort((a, b) => ((a[0] - c.x) ** 2 + (a[2] - c.z) ** 2) - ((b[0] - c.x) ** 2 + (b[2] - c.z) ** 2));
+      for (const p of lista) { if (n >= CAP[k]) break; o3.position.set(p[0], p[1], p[2]); o3.rotation.set(0, p[3], 0); o3.updateMatrix(); for (const im of IM[k]) im.setMatrixAt(n, o3.matrix); n++; }
+      for (const im of IM[k]) { im.count = n; im.instanceMatrix.needsUpdate = true; }
+    }
+    centro.copy(c); radio = Math.min(R, movil ? 260 : 420);
+  }
+  const centro = new THREE.Vector3(); let radio = 400;
+
+  // ---------- polinizadores y aliados de la huerta ----------
+  const ESP = {
+    colibri: { n: 'Colibrí chillón', sci: 'Colibri coruscans', c: '#2fae6e', v: 9, cant: movil ? 24 : 80, liba: [1.2, 3.2], salto: 70, rol: 'Poliniza las flores de albahaca, rúcula y caléndula de las huertas; vuelve a las mismas flores cada pocos minutos (rutas de trapline)' },
+    abeja: { n: 'Abeja de miel', sci: 'Apis mellifera', c: '#f2c230', v: 4.5, cant: movil ? 60 : 220, liba: [2, 6], salto: 35, rol: 'Poliniza hortalizas y aromáticas; la colmena de barrio las conecta con parques y humedales' },
+    mariposa: { n: 'Mariposas', sci: 'Anartia amathea · Ascia monuste', c: '#ff8a3d', v: 2.4, cant: movil ? 30 : 110, liba: [3, 8], salto: 25, rol: 'Visitan flores de la huerta; su presencia indica una huerta sin plaguicidas' },
+    abejorro: { n: 'Abejorro', sci: 'Bombus atratus', c: '#3a3a3a', v: 3.6, cant: movil ? 24 : 80, liba: [2, 5], salto: 30, rol: 'Abejorro nativo de la sabana: poliniza tomate, fresa y uchuva por vibración, aun con frío y llovizna' },
+    copeton: { n: 'Copetón', sci: 'Zonotrichia capensis', c: '#b48a5a', v: 6, cant: movil ? 12 : 40, liba: [4, 10], salto: 45, rol: 'Come insectos y semillas de maleza entre los racks: control natural de plagas sin dañar la huerta' }
+  };
+  // modelos (1 unidad = 1 m), hechos de piezas simples pero con su silueta y color reales
+  const elip = (rx, ry, rz, x, y, z, col) => { const g = new THREE.SphereGeometry(1, 10, 7).scale(rx, ry, rz).translate(x, y, z); const c = new THREE.Color(col), a = new Float32Array(g.attributes.position.count * 3); for (let i = 0; i < a.length; i += 3) { a[i] = c.r; a[i + 1] = c.g; a[i + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(a, 3)); return g; };
+  const cono = (r, L, x, y, z, rz, col) => { const g = new THREE.ConeGeometry(r, L, 6).rotateZ(rz).translate(x, y, z); const c = new THREE.Color(col), a = new Float32Array(g.attributes.position.count * 3); for (let i = 0; i < a.length; i += 3) { a[i] = c.r; a[i + 1] = c.g; a[i + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(a, 3)); for (const k of ['uv']) g.deleteAttribute(k); return g; };
+  const limpio = (gs) => mergeGeometries(gs.map(g => { if (g.attributes.uv) g.deleteAttribute('uv'); return g.index ? g.toNonIndexed() : g; }));
+  const cuerpos = {
+    // colibrí: cuerpo verde esmeralda iridiscente, garganta violeta, pico largo y recto, cola ahorquillada oscura (10 cm)
+    colibri: limpio([elip(0.035, 0.016, 0.017, 0, 0, 0, '#1f9a5c'), elip(0.016, 0.015, 0.015, 0.038, 0.006, 0, '#178a4f'), elip(0.012, 0.008, 0.012, 0.03, -0.008, 0, '#5a3fb8'), cono(0.003, 0.04, 0.072, 0.006, 0, -Math.PI / 2, '#151515'), cono(0.012, 0.035, -0.05, -0.002, 0, Math.PI / 2, '#1d3a33'), elip(0.004, 0.004, 0.004, 0.047, 0.012, 0.009, '#050505'), elip(0.004, 0.004, 0.004, 0.047, 0.012, -0.009, '#050505')]),
+    // abeja: tórax pardo velludo y abdomen con franjas (1,5 cm)
+    abeja: limpio([elip(0.004, 0.004, 0.004, 0.004, 0, 0, '#5a4524'), elip(0.0065, 0.0045, 0.0045, -0.005, -0.0005, 0, '#e0a52a'), elip(0.0066, 0.0046, 0.0046, -0.006, -0.0005, 0, '#2a2016').scale(0.45, 1.02, 1.02).translate(-0.003, 0, 0), elip(0.0066, 0.0046, 0.0046, -0.008, -0.0005, 0, '#2a2016').scale(0.3, 1.02, 1.02).translate(-0.006, 0, 0), elip(0.0032, 0.003, 0.003, 0.0095, 0.0005, 0, '#2a2016')]),
+    // mariposa: cuerpo delgado oscuro (las alas son aparte)
+    mariposa: limpio([elip(0.014, 0.0025, 0.0025, 0, 0, 0, '#2a2520'), elip(0.0035, 0.003, 0.003, 0.016, 0.001, 0, '#2a2520')]),
+    // abejorro: negro y velludo con la punta del abdomen amarillenta (2 cm)
+    abejorro: limpio([elip(0.006, 0.0055, 0.0055, 0.005, 0, 0, '#1d1b18'), elip(0.009, 0.0068, 0.0068, -0.007, -0.0005, 0, '#24211d'), elip(0.004, 0.0045, 0.0045, -0.015, -0.001, 0, '#d9b43a'), elip(0.0038, 0.0035, 0.0035, 0.012, 0, 0, '#141210')]),
+    // copetón: pardo con rayas, cresta gris y collar rufo (15 cm)
+    copeton: limpio([elip(0.055, 0.032, 0.03, 0, 0, 0, '#8a6a48'), elip(0.03, 0.025, 0.026, 0.05, 0.022, 0, '#7d7a72'), elip(0.02, 0.018, 0.028, 0.03, 0.002, 0, '#b0643a'), elip(0.03, 0.022, 0.024, 0.005, -0.012, 0, '#ddd6c8'), cono(0.006, 0.016, 0.083, 0.02, 0, -Math.PI / 2, '#3b3631'), cono(0.014, 0.05, -0.075, 0.004, 0, Math.PI / 2 + 0.15, '#5a4636'), cono(0.008, 0.025, 0.045, 0.05, 0, 0.5, '#6f6a62'), elip(0.004, 0.004, 0.004, 0.067, 0.03, 0.013, '#050505'), elip(0.004, 0.004, 0.004, 0.067, 0.03, -0.013, '#050505')])
+  };
+  // alas: media ala con la raíz en el origen, a lo largo de +z; se baten girando en x
+  const texAlaMar = lienzo(128, 128, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#e8762c'; g.beginPath(); g.moveTo(0, h * 0.5); g.bezierCurveTo(w * 0.3, -h * 0.05, w, h * 0.05, w * 0.95, h * 0.45); g.bezierCurveTo(w, h * 0.75, w * 0.4, h, 0, h * 0.55); g.fill(); g.strokeStyle = '#2a1a10'; g.lineWidth = 7; g.stroke(); g.fillStyle = '#fff'; for (const [x, y] of [[0.8, 0.3], [0.85, 0.55], [0.7, 0.2]]) { g.beginPath(); g.arc(x * w, y * h, 4, 0, 7); g.fill(); } });
+  const texAlaBla = lienzo(128, 128, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#f4f2ea'; g.beginPath(); g.moveTo(0, h * 0.5); g.bezierCurveTo(w * 0.3, -h * 0.05, w, h * 0.05, w * 0.95, h * 0.45); g.bezierCurveTo(w, h * 0.75, w * 0.4, h, 0, h * 0.55); g.fill(); g.fillStyle = '#3a3a3a'; g.fillRect(w * 0.75, h * 0.1, w * 0.2, h * 0.12); });
+  const ala = (largo, ancho, x) => new THREE.PlaneGeometry(ancho, largo).rotateX(-Math.PI / 2).translate(x, 0, largo / 2);
+  const ALAS = {
+    colibri: [ala(0.06, 0.022, 0.005), new THREE.MeshBasicMaterial({ color: 0x9fb8b0, transparent: true, opacity: 0.32, side: THREE.DoubleSide, depthWrite: false }), 42],
+    abejorro: [ala(0.014, 0.007, 0.004), new THREE.MeshBasicMaterial({ color: 0xc9d2dc, transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false }), 30],
+    abeja: [ala(0.011, 0.005, 0.003), new THREE.MeshBasicMaterial({ color: 0xdfe8f2, transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false }), 34],
+    mariposa: [ala(0.035, 0.04, 0.002), null, 6],
+    copeton: [ala(0.085, 0.045, 0), new THREE.MeshStandardMaterial({ color: 0x6e5238, side: THREE.DoubleSide, roughness: 0.8 }), 14]
+  };
+  const matAlaMar = [new THREE.MeshStandardMaterial({ map: texAlaMar, alphaTest: 0.3, side: THREE.DoubleSide }), new THREE.MeshStandardMaterial({ map: texAlaBla, alphaTest: 0.3, side: THREE.DoubleSide })];
+  const AG = [], MESH = {};
+  for (const [k, e] of Object.entries(ESP)) {
+    const cuerpo = new THREE.InstancedMesh(cuerpos[k], new THREE.MeshStandardMaterial({ vertexColors: true, roughness: k === 'colibri' ? 0.25 : 0.7, metalness: k === 'colibri' ? 0.45 : 0 }), e.cant);
+    const alas = k === 'mariposa' ? matAlaMar.map(m => [0, 1].map(() => new THREE.InstancedMesh(ALAS[k][0], m, e.cant))) : [[0, 1].map(() => new THREE.InstancedMesh(ALAS[k][0], ALAS[k][1], e.cant))];
+    for (const m of [cuerpo, ...alas.flat()]) { m.frustumCulled = false; grupo.add(m); }
+    MESH[k] = { cuerpo, alas };
+    for (let i = 0; i < e.cant; i++) AG.push({ e: k, i, x: 0, y: -999, z: 0, vx: 0, vy: 0, vz: 0, st: 'nuevo', t: rnd() * 3, flor: -1, prev: -1, fase: rnd() * 6, var: k === 'mariposa' ? (rnd() < 0.6 ? 0 : 1) : 0, vis: 0 });
+  }
+  const florCerca = (x, z, R) => { // flor al azar a menos de R m (o cualquiera del área visible)
+    const out = [], c0 = Math.floor(x / CELDA), r0 = Math.floor(z / CELDA), nc = Math.ceil(R / CELDA);
+    for (let i = -nc; i <= nc; i++) for (let j = -nc; j <= nc; j++) { const l = FC.get((c0 + i) + ',' + (r0 + j)); if (l) for (const f of l) { const F = FLORES[f]; if ((F[0] - x) ** 2 + (F[2] - z) ** 2 < R * R) out.push(f); } }
+    return out.length ? out[Math.floor(rnd() * out.length)] : -1;
+  };
+  // red de visitas: aristas recientes entre flores consecutivas de un mismo individuo (color de la especie)
+  const MAXA = movil ? 160 : 520, red = new Float32Array(MAXA * 6), redC = new Float32Array(MAXA * 6), aristas = [];
+  const gRed = new THREE.BufferGeometry(); gRed.setAttribute('position', new THREE.BufferAttribute(red, 3)); gRed.setAttribute('color', new THREE.BufferAttribute(redC, 3));
+  const lineasRed = new THREE.LineSegments(gRed, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending }));
+  lineasRed.frustumCulled = false; lineasRed.renderOrder = 8; lineasRed.visible = false; grupo.add(lineasRed); // sin las líneas entre techos (se veían como fuegos artificiales)
+  const COLE = Object.fromEntries(Object.entries(ESP).map(([k, e]) => [k, new THREE.Color(e.c)]));
+  const conteo = { visitas: 0, edificios: new Set(), cruces: 0 };
+  function visitar(a, f) {
+    if (a.flor >= 0 && f >= 0) {
+      const A = FLORES[a.flor], B = FLORES[f];
+      aristas.push({ a: [A[0], A[1], A[2]], b: [B[0], B[1], B[2]], c: COLE[a.e], t: 0, cruza: A[4] !== B[4] });
+      if (aristas.length > MAXA) aristas.shift();
+      conteo.visitas++; if (A[4] !== B[4]) conteo.cruces++; conteo.edificios.add(B[4]);
+    }
+    a.prev = a.flor; a.flor = f;
+  }
+  function moverA(a, dt, cam) {
+    const e = ESP[a.e];
+    if (a.st === 'nuevo') { // aparece en una flor al azar del área visible
+      const f = florCerca(centro.x, centro.z, radio); if (f < 0) return;
+      const F = FLORES[f]; a.x = F[0] + (rnd() - 0.5) * 20; a.y = F[1] + 6 + rnd() * 10; a.z = F[2] + (rnd() - 0.5) * 20; a.flor = -1; a.dest = f; a.st = 'vuela'; return;
+    }
+    if (a.st === 'liba') {
+      a.t -= dt; const F = FLORES[a.flor]; if (!F) { a.st = 'nuevo'; return; }
+      if (F[5] !== undefined) { a.vx = -F[5] * 0.01; a.vz = -F[6] * 0.01; a.vy = 0; } // de frente a la planta
+      const r = a.e === 'colibri' ? 0.18 : a.e === 'copeton' ? 0.05 : 0.07; // el colibrí se cierne frente a la flor; abejas y mariposas se posan
+      a.x += (F[0] + Math.cos(a.fase) * r - a.x) * Math.min(1, dt * 6); a.y += (F[1] + (a.e === 'copeton' ? -0.2 : 0) + Math.sin(a.fase * 3) * 0.01 - a.y) * Math.min(1, dt * 6); a.z += (F[2] + Math.sin(a.fase) * r - a.z) * Math.min(1, dt * 6);
+      if (a.t <= 0) { // siguiente flor: casi siempre cerca (misma huerta o el balcón de al lado); a veces otro edificio
+        const lejos = rnd() < 0.22, f = florCerca(a.x, a.z, lejos ? e.salto * 2.5 : e.salto); if (f < 0) { a.st = 'nuevo'; return; }
+        a.dest = f; a.st = 'vuela';
+      }
+      return;
+    }
+    // vuelo hacia la flor de destino (con arco y, para mariposas, aleteo errático)
+    const F = FLORES[a.dest]; if (!F) { a.st = 'nuevo'; return; }
+    const dx = F[0] - a.x, dy = F[1] + (a.e === 'colibri' ? 0 : 0.06) - a.y, dz = F[2] - a.z, d = Math.hypot(dx, dy, dz);
+    if (d < 0.25) { visitar(a, a.dest); a.st = 'liba'; a.t = e.liba[0] + rnd() * (e.liba[1] - e.liba[0]); return; }
+    const sube = Math.min(6, d * 0.15) * Math.min(1, d / 20), v = e.v * (a.e === 'mariposa' ? 0.7 + 0.5 * Math.sin(a.fase * 0.7) : 1);
+    let tx = dx / d * v, ty = (dy + sube) / Math.max(1, d) * v, tz = dz / d * v;
+    if (a.e === 'mariposa') { tx += Math.sin(a.fase * 1.9) * 0.9; ty += Math.cos(a.fase * 2.3) * 0.8; tz += Math.cos(a.fase * 1.7) * 0.9; }
+    if (a.e === 'abeja' || a.e === 'abejorro') { tx += Math.sin(a.fase * 5) * 0.4; tz += Math.cos(a.fase * 4) * 0.4; }
+    const k = Math.min(1, dt * (a.e === 'colibri' ? 7 : 3.5));
+    a.vx += (tx - a.vx) * k; a.vy += (ty - a.vy) * k; a.vz += (tz - a.vz) * k;
+    const paso = Math.min(d, Math.hypot(a.vx, a.vy, a.vz) * dt) / Math.max(1e-6, Math.hypot(a.vx, a.vy, a.vz) * dt);
+    a.x += a.vx * dt * paso; a.y += a.vy * dt * paso; a.z += a.vz * dt * paso;
+  }
+  const q = new THREE.Quaternion(), qa = new THREE.Quaternion(), eu = new THREE.Euler(), pos = new THREE.Vector3(), esc = new THREE.Vector3(), M4 = new THREE.Matrix4(), Mala = new THREE.Matrix4();
+  const Q_VUELTA = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI), vAla = new THREE.Vector3(), eAla = new THREE.Vector3(), M5 = new THREE.Matrix4(), OCULTO = new THREE.Matrix4().makeScale(0, 0, 0);
+  function dibujarA(a, dt, cam) {
+    const m = MESH[a.e], e = ESP[a.e];
+    a.fase += dt * (a.st === 'liba' ? 1.3 : 1);
+    // tamaño real de cerca; de lejos se agrandan para seguir viéndose (como un marcador), sin pasar de 25 veces
+    const dist = Math.hypot(a.x - cam.position.x, a.y - cam.position.y, a.z - cam.position.z), base = { colibri: 0.1, abeja: 0.016, abejorro: 0.022, mariposa: 0.07, copeton: 0.16 }[a.e];
+    const s = Math.min(25, Math.max(a.e === 'colibri' || a.e === 'copeton' ? 1.4 : 2.2, dist * 0.007 / base)); // de cerca un poco más grandes que en la realidad para poder verlos
+    const yaw = Math.atan2(-a.vz, a.vx), cabeceo = a.st === 'liba' ? (a.e === 'colibri' ? 0.35 : 0) : Math.atan2(a.vy, Math.hypot(a.vx, a.vz)) * 0.5;
+    eu.set(0, yaw, cabeceo, 'YZX'); q.setFromEuler(eu); pos.set(a.x, a.y, a.z); esc.set(s, s, s); M4.compose(pos, q, esc);
+    m.cuerpo.setMatrixAt(a.i, M4);
+    // aleteo: colibrí y abeja muy rápido (borroso), mariposa lento y amplio, copetón con pausas
+    const posado = a.st === 'liba' && (a.e === 'mariposa' || a.e === 'copeton' || a.e === 'abeja' || a.e === 'abejorro');
+    const f = ALAS[a.e][2], amp = posado ? (a.e === 'mariposa' ? 0.5 + 0.4 * Math.sin(a.fase * 2) : 0.05) : a.e === 'mariposa' ? 1.1 : 0.9;
+    const angA = posado && a.e === 'mariposa' ? 1.2 + 0.3 * Math.sin(a.fase * 2) : Math.sin(performance.now() / 1000 * f * 6.283 + a.i) * amp;
+    m.alas.forEach((par, vi) => par.forEach((im, lado) => {
+      const vis = a.e !== 'mariposa' || vi === a.var;
+      eu.set((lado ? -1 : 1) * angA, 0, 0); qa.setFromEuler(eu); if (lado) qa.multiply(Q_VUELTA);
+      vAla.set(0, a.e === 'copeton' ? 0.02 : 0.005, 0); eAla.set(1, 1, vis ? 1 : 0); Mala.compose(vAla, qa, eAla); M5.multiplyMatrices(M4, Mala); im.setMatrixAt(a.i, M5);
+    }));
+  }
+  // ficha y contador de la red
+  const css = document.createElement('style'); css.textContent = `
+#hid-red{position:fixed;z-index:9;right:14px;top:14px;width:304px;display:none;flex-direction:column;gap:0;padding:14px 16px 12px;border-radius:12px;
+  background:var(--ui-bg,rgba(13,15,18,.8));border:1px solid var(--ui-bd,rgba(255,255,255,.075));color:var(--ui-tx,#e9ebec);font:400 12px var(--ui-sans,Inter,system-ui,sans-serif);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 12px 32px rgba(0,0,0,.28);font-variant-numeric:tabular-nums}
+#hid-red .hr-h{font:500 9.5px var(--ui-mono,'JetBrains Mono',monospace);letter-spacing:.16em;text-transform:uppercase;color:var(--ui-tx3,#646c71)}
+#hid-red .hr-t{margin:4px 0 12px;font-size:13px;font-weight:500;line-height:1.3}#hid-red .hr-t small{display:block;margin-top:2px;font-size:11px;font-weight:400;color:var(--ui-tx2,#9aa2a7)}
+#hid-red .hr-k{display:grid;grid-template-columns:repeat(3,1fr);padding:10px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+#hid-red .hr-k div{padding:0 8px;border-left:1px solid rgba(255,255,255,.06)}#hid-red .hr-k div:first-child{padding-left:0;border-left:0}
+#hid-red .hr-k strong{display:block;font:300 20px/1.1 var(--ui-sans,Inter,sans-serif)}#hid-red .hr-k small{display:block;margin-top:3px;font-size:10px;line-height:1.3;color:var(--ui-tx3,#646c71)}
+#hid-red .hr-l{display:grid;gap:7px;margin-top:10px}
+#hid-red .hr-r{display:grid;grid-template-columns:8px minmax(0,1fr) 72px 30px;gap:9px;align-items:center;font-size:11.5px}
+#hid-red .hr-r i{width:8px;height:8px;border-radius:50%}#hid-red .hr-r span small{display:block;font-size:10px;font-style:italic;color:var(--ui-tx3,#646c71)}
+#hid-red .hr-r u{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.06);text-decoration:none;overflow:hidden}#hid-red .hr-r u b{display:block;height:100%;border-radius:2px}
+#hid-red .hr-r em{font-style:normal;text-align:right;color:var(--ui-tx2,#9aa2a7)}
+#dock #hid-red{padding:12px 14px!important;box-shadow:none!important;border:0!important;background:none!important}
+@media(max-width:760px){#hid-red{left:8px;right:8px;width:auto;top:auto;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 196px);padding:10px 12px}#hid-red .hr-l,#hid-red .hr-t small{display:none}#hid-red .hr-t{margin:2px 0 8px}#hid-red .hr-k{padding:6px 0 0;border-bottom:0}#hid-red .hr-k strong{font-size:16px}}`;
+  document.head.appendChild(css);
+  const panel = document.createElement('div'); panel.id = 'hid-red'; panel.dataset.on = '0';
+  const maxC = Math.max(...Object.values(ESP).map(e => e.cant));
+  panel.innerHTML = '<div class="hr-h">Polinización · con la propuesta</div><div class="hr-t">Huertas hidropónicas en techos y balcones<small>Los polinizadores vuelan de flor en flor y de un edificio a otro.</small></div>'
+    + '<div class="hr-k"><div><strong id="hid-v">0</strong><small>visitas a flores</small></div><div><strong id="hid-x">0</strong><small>vuelos entre edificios</small></div><div><strong id="hid-e">0</strong><small>edificios conectados</small></div></div>'
+    + '<div class="hr-l">' + Object.values(ESP).map(e => `<div class="hr-r" title="${e.rol}"><i style="background:${e.c}"></i><span>${e.n}<small>${e.sci}</small></span><u><b style="width:${(e.cant / maxC * 100).toFixed(0)}%;background:${e.c}"></b></u><em>${e.cant}</em></div>`).join('') + '</div>';
+  document.body.appendChild(panel);
+  let tUlt = performance.now(), tRec = 0, tPanel = 0;
+  function cuadro() {
+    requestAnimationFrame(cuadro);
+    if (!grupo.visible) return;
+    const ahora = performance.now(), dt = Math.min(0.05, (ahora - tUlt) / 1000); tUlt = ahora;
+    if (sucioFrac && ahora - tFrac > 330) { sucioFrac = false; tFrac = ahora; ultimo = null; tRec = 0.6; recalcular(); } // cambió la fracción de cubiertas: se recalcula aquí, no en cada paso
+    else if ((tRec -= dt) <= 0) { tRec = 0.6; recalcular(); }
+    const cam = T3.camera;
+    const hi = {}; // por especie: mayor índice tocado en este cuadro (para subir solo ese tramo de matrices)
+    for (const a of AG) {
+      // el que quedó lejos del área visible reaparece cerca
+      if (a.st !== 'nuevo' && (a.x - centro.x) ** 2 + (a.z - centro.z) ** 2 > (radio * 1.6) ** 2) a.st = 'nuevo';
+      const lejos = (a.x - cam.position.x) ** 2 + (a.z - cam.position.z) ** 2 > 450 * 450;
+      if (lejos && a.st !== 'nuevo') { if (!a.oculto) { a.oculto = true; const m = MESH[a.e]; m.cuerpo.setMatrixAt(a.i, OCULTO); for (const par of m.alas) for (const im of par) im.setMatrixAt(a.i, OCULTO); if (a.i > (hi[a.e] ?? -1)) hi[a.e] = a.i; } continue; }
+      a.oculto = false; moverA(a, dt, cam); dibujarA(a, dt, cam); if (a.i > (hi[a.e] ?? -1)) hi[a.e] = a.i;
+    }
+    // sube a la GPU solo si hubo agentes visibles (o recién ocultos), con el tramo 0..índice mayor; el resto de matrices no cambió
+    for (const k in MESH) { const m = MESH[k], h = hi[k]; if (h === undefined) continue; const n = (h + 1) * 16;
+      for (const im of [m.cuerpo, ...m.alas.flat()]) { im.instanceMatrix.clearUpdateRanges(); im.instanceMatrix.addUpdateRange(0, n); im.instanceMatrix.needsUpdate = true; } }
+    // aristas de la red: se desvanecen en ~40 s; las que cruzan de un edificio a otro, más brillantes
+    let n = 0;
+    for (const r of aristas) {
+      r.t += dt; const k = Math.max(0, 1 - r.t / 40) * (r.cruza ? 1 : 0.55); if (k <= 0) continue;
+      red.set([r.a[0], r.a[1], r.a[2], r.b[0], r.b[1], r.b[2]], n * 6); for (let j = 0; j < 2; j++) { redC[n * 6 + j * 3] = r.c.r * k; redC[n * 6 + j * 3 + 1] = r.c.g * k; redC[n * 6 + j * 3 + 2] = r.c.b * k; } n++;
+    }
+    gRed.setDrawRange(0, n * 2); gRed.attributes.position.needsUpdate = true; gRed.attributes.color.needsUpdate = true;
+    if ((tPanel -= dt) <= 0) { tPanel = 0.5; const f = (v) => v.toLocaleString('es-CO'), s = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; }; s('hid-v', f(conteo.visitas)); s('hid-x', f(conteo.cruces)); s('hid-e', f(conteo.edificios.size)); }
+  }
+  requestAnimationFrame(cuadro);
+  T3.hidroAgentes = AG; T3.hidroMesh = MESH; // para depurar
+  const total = Object.fromEntries(Object.entries(INST).map(([k, v]) => [k, v.length]));
+  return {
+    grupo, total, flores: FLORES.length, techos: ORD.size,
+    // f en [0, 1]: fracción de cubiertas con huerta; las que se abren en este paso disparan un pulso de luz (data3d/resaltes.js)
+    fraccion(f) { f = Math.max(0, Math.min(1, f)); if (Math.abs(f - frac) < 0.002) return; const antes = frac; frac = f; uFrac.value = f;
+      if (f > antes && grupo.visible) import('./resaltes.js?v=1').then(m => { const R2 = m.resaltes(T3); let k = 0; for (const [ti, o] of ORD) if (o > antes && o <= f && k++ < 60) { const c = TCEN.get(ti); if (c) R2.pulso(c[0], c[1], c[2], 25); } }).catch(() => {});
+      sucioFrac = true; if (grupo.visible && performance.now() - tFrac > 330) { tFrac = performance.now(); sucioFrac = false; ultimo = null; recalcular(); } }, // tope ~3 veces/s; el resto lo hace el tick de cuadro()
+    get frac() { return frac; },
+    centros: () => [...ORD].map(([ti, o]) => [TCEN.get(ti), o]), // [centro, orden] de cada cubierta con huerta
+    ver: (on) => { grupo.visible = on; panel.style.display = on ? 'flex' : 'none'; const v = on ? '1' : '0'; if (panel.dataset.on !== v) { panel.dataset.on = v; dispatchEvent(new Event('dock-cambio')); } if (on) { ultimo = null; recalcular(); } }
+  };
+}

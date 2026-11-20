@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bavaria Común en puntos</title>
+<meta name="description" content="Las huertas de enseñanza de Bavaria Común en puntos: con el scroll se encuadran las especies que llegan a la huerta y lo que hacen en ella.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04070a;--tx:#eef2f1;--tx2:#a9b6b3;--tx3:#6c7a77;--acc:#7fe0c4;--mono:'JetBrains Mono',ui-monospace,monospace;--sans:Inter,system-ui,sans-serif;--cond:'Barlow Condensed',Inter,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--sans)}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+.top{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 28px;font-size:12px;color:var(--tx2);background:linear-gradient(rgba(4,7,10,.8),transparent)}
+.top a{color:var(--tx2);text-decoration:none}.top a:hover{color:var(--tx)}.top .ix{font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.top nav{display:flex;gap:4px}.top nav a{padding:4px 9px;border-radius:6px;font-size:12px}.top nav a.on{color:var(--tx);box-shadow:inset 0 -1.5px 0 var(--acc)}
+#marcoG{position:fixed;inset:56px 22px 22px;z-index:1;pointer-events:none;border:1px solid rgba(255,255,255,.06)}
+/* recuadro grande con la especie en puntos */
+#inset{position:fixed;z-index:4;width:var(--s);height:var(--s);--s:min(46vh,36vw);left:52%;top:50%;transform:translateY(-55%);pointer-events:none;opacity:0;transition:opacity .5s,left .6s cubic-bezier(.2,.8,.2,1)}
+#inset.on{opacity:1}
+#inset canvas{display:none}#inset{border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 20px 50px rgba(0,0,0,.45)}#inset::after{content:'EN VIVO · 3D';position:absolute;left:8px;top:6px;font:500 9.5px var(--mono);letter-spacing:.14em;color:var(--acc)}
+#inset .n{position:absolute;right:8px;top:6px;font:500 10px var(--mono);color:var(--tx2)}
+#inset .cap{position:absolute;left:0;top:calc(100% + 8px);font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--tx)}
+#inset .cap i{display:block;font:italic 400 11px var(--sans);letter-spacing:0;text-transform:none;color:var(--tx2);margin-top:3px}
+/* encuadre en la escena: dónde está el animal a lo lejos */
+#enc{position:fixed;z-index:3;left:0;top:0;width:60px;height:60px;pointer-events:none;opacity:0;transition:opacity .4s}
+#enc.on{opacity:1}#enc::before,#enc::after,#enc b::before,#enc b::after{content:'';position:absolute;width:12px;height:12px;border:1.5px solid var(--acc)}
+#enc::before{left:0;top:0;border-right:0;border-bottom:0}#enc::after{right:0;top:0;border-left:0;border-bottom:0}#enc b::before{left:0;bottom:0;border-right:0;border-top:0}#enc b::after{right:0;bottom:0;border-left:0;border-top:0}
+#enc em{position:absolute;left:0;top:calc(100% + 5px);font:500 9.5px var(--mono);letter-spacing:.14em;color:var(--acc);font-style:normal;white-space:nowrap;text-transform:uppercase}
+svg#hilo{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+/* textos que suben con el scroll */
+main{position:relative;z-index:5;pointer-events:none}
+section{height:100vh;display:flex;align-items:flex-end;padding:0 0 9vh 6vw}
+section.hero{align-items:center}
+.tx{max-width:420px;pointer-events:auto}
+.tx .ey{font:500 11px var(--mono);letter-spacing:.18em;color:var(--acc);text-transform:uppercase}
+.tx h1,.tx h2{margin:10px 0 12px;font:300 clamp(40px,6vw,78px)/.95 var(--cond);letter-spacing:.01em;text-transform:uppercase}
+.tx h2{font-size:clamp(34px,4.6vw,60px)}
+.tx p{margin:0;font-size:14.5px;line-height:1.6;color:#d6dfdc;text-shadow:0 1px 10px rgba(0,0,0,.9)}
+.tx .rel{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 11px;border:1px solid rgba(255,255,255,.18);font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--tx)}
+.tx .rel i{width:8px;height:8px;border-radius:50%}
+.tx .baja{display:inline-flex;gap:10px;align-items:center;margin-top:24px;padding:12px 18px;border:1px solid rgba(255,255,255,.3);font:500 11px var(--mono);letter-spacing:.18em;color:var(--tx);text-decoration:none;text-transform:uppercase}
+.tx .baja:hover{background:rgba(255,255,255,.06)}
+.tx .fin{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.tx .fin .rec{all:unset;cursor:pointer;padding:11px 16px;background:var(--acc);color:#04201a;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+#guiaRec{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:12;display:none;gap:10px;align-items:center;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(4,7,10,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font:500 11px var(--mono);letter-spacing:.08em;color:var(--tx2)}
+#guiaRec button{all:unset;cursor:pointer;color:var(--tx);padding:6px 10px;border:1px solid rgba(255,255,255,.25)}
+body.libre main,body.libre .prog,body.libre #inset,body.libre #enc,body.libre #hilo{display:none!important}body.libre{overflow:hidden}body.libre #guiaRec{display:flex}body.libre canvas#c{cursor:grab}
+.tx .fin a{padding:11px 16px;border:1px solid rgba(255,255,255,.28);font:500 11px var(--mono);letter-spacing:.14em;color:var(--tx);text-decoration:none;text-transform:uppercase}.tx .fin a:hover{background:rgba(255,255,255,.07)}
+.pie{position:fixed;right:28px;bottom:24px;z-index:6;display:flex;gap:18px;align-items:center;font-size:10.5px;color:var(--tx3)}
+.pie .modos{display:flex;gap:2px;padding:3px;border:1px solid rgba(255,255,255,.16);background:rgba(4,7,10,.6)}.pie .modos{flex-wrap:wrap}
+body[data-vision=realista] main::before,body[data-vision=maqueta] main::before{content:'';position:fixed;inset:0;background:linear-gradient(90deg,rgba(4,7,10,.72),rgba(4,7,10,.25) 40%,transparent 60%);pointer-events:none;z-index:-1}.pie .modos button{padding:5px 9px;font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--tx2)}.pie .modos button[aria-pressed=true]{background:var(--acc);color:#04201a}
+.pie button{all:unset;cursor:pointer;color:var(--tx2);font-size:11.5px}.pie button:hover{color:var(--tx)}.pie span{max-width:520px;text-align:right}
+.prog{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:8px}
+.prog a{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);display:block}.prog a.on{background:var(--acc);box-shadow:0 0 8px var(--acc)}
+.carga{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--bg);font:500 11px var(--mono);letter-spacing:.16em;color:var(--tx2);transition:opacity .8s}
+.carga i{width:180px;height:2px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}.carga i b{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--acc);transition:width .2s}
+a:focus-visible,button:focus-visible{outline:1px solid var(--acc);outline-offset:3px}
+@media(max-width:760px){
+  .top{padding:10px 14px}.top nav,.top .ix span{display:none}
+  #marcoG{inset:48px 8px 8px}
+  #inset{--s:52vw;left:auto!important;right:14px;top:70px;transform:none}
+  section{padding:0 18px 12vh}.tx h1{font-size:44px}.tx h2{font-size:36px}.tx p{font-size:13px}
+  .pie span{display:none}.pie{right:16px;bottom:14px}.prog{right:6px}
+}
+@media(prefers-reduced-motion:reduce){#inset,#enc{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Huertas de enseñanza de Bavaria Común en puntos, con las especies que llegan a ellas"></canvas>
+<div id="marcoG"></div>
+<div class="top"><a href="index.html" aria-label="Volver al simulador">← Simulador · Kennedy</a>
+  <nav aria-label="Secciones" id="nav"></nav>
+  <a href="bavaria_interior.html?e=bio" class="ix">Entrar a los edificios →</a></div>
+<svg id="hilo" aria-hidden="true"><line id="hl" x1="0" y1="0" x2="0" y2="0" stroke="rgba(127,224,196,.55)" stroke-width="1" stroke-dasharray="3 4"/></svg>
+<div id="enc"><b></b><em></em></div>
+<div id="inset" aria-hidden="true"><canvas id="ic" width="512" height="512"></canvas><span class="n"></span><div class="cap"></div></div>
+<main id="secs"></main>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="pie"><div class="modos" role="group" aria-label="Tipo de visión"><button type="button" data-m="puntos" aria-pressed="true">Puntos</button><button type="button" data-m="realista" aria-pressed="false">Realista</button><button type="button" data-m="maqueta" aria-pressed="false">Maqueta</button><button type="button" data-m="rayos" aria-pressed="false">Rayos X</button><button type="button" data-m="alambre" aria-pressed="false">Alambre</button><button type="button" data-m="termica" aria-pressed="false">Térmica</button></div><button id="pausa" type="button">Pausar movimiento</button><span id="nota"></span></div>
+<div id="guiaRec"><span>Arrastra para mirar · W A S D o flechas para caminar · rueda para avanzar</span><button type="button" id="b-salir">Salir</button></div>
+<div class="carga" id="carga"><span>CARGANDO PUNTOS</span><i><b id="cb"></b></i></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let RMQ = matchMedia('(prefers-reduced-motion: reduce)').matches; const MOV = innerWidth <= 760;
+const M = await fetch('data3d/puntos/bavaria_campo.json?v=9').then(r => r.json());
+const ESP = M.especies, porK = Object.fromEntries(ESP.map(e => [e.k, e]));
+{ const NOM = { cilantro: 'Lavanda', lechuga: 'Lechuga', tomate: 'Tomate', acelga: 'Brócoli', zanahoria: 'Remolacha', eucalipto: 'Árboles existentes' }; for (const k in NOM) if (porK[k]) porK[k].n = NOM[k]; }
+
+/* ---------- las interacciones que se encuadran con el scroll ---------- */
+const SEC = [
+  ['colibri', 'cilantro', 'Polinización', 'Colibrí', 'Flota frente a las flores de lavanda y toma su néctar; el polen se le pega al pico y lo lleva a la siguiente flor.'],
+  ['abeja', 'cilantro', 'Polinización', 'Abeja de miel', 'Viene del apiario del distrito y recorre las hileras de lavanda: poliniza la huerta y produce miel para el mercado.'],
+  ['mariposa', 'cilantro', 'Polinización', 'Mariposa', 'Toma néctar de la lavanda. Que llegue es señal de una huerta sin venenos.'],
+  ['mariquita', 'lechuga', 'Cuidado de los cultivos', 'Mariquita', 'Recorre las hojas de la lechuga y las mantiene sanas: con ella la huerta no necesita químicos.'],
+  ['abejorro', 'tomate', 'Polinización', 'Abejorro', 'El abejorro nativo hace vibrar las flores del tomate para soltar su polen: así hay más tomates.'],
+  ['copeton', 'acelga', 'Cuidado de los cultivos', 'Copetón', 'Salta por el sendero de madera entre las hileras, cuidando las plantas y dispersando semillas; anida en los árboles que se conservan.'],
+  ['mirla', 'lombriz', 'Depredación', 'Mirla patiamarilla', 'Busca en la tierra húmeda junto a las hileras y saca lombrices e insectos.'],
+  ['lombriz', 'zanahoria', 'Suelo vivo', 'Lombriz roja', 'Convierte el compost del distrito en tierra fértil para todos los bancales.'],
+  ['murcielago', 'eucalipto', 'Refugio', 'Murciélago', 'Al anochecer sale de los refugios de los árboles y poliniza flores nocturnas.']
+].filter(s => porK[s[0]]);
+$('secs').innerHTML = `<section class="hero" id="s0"><div class="tx"><div class="ey">Bavaria Común desde arriba · huertas de enseñanza</div><h1>Tramas de vida en la huerta</h1>
+<p>El predio real de Bavaria Común visto desde arriba (sus edificios, el bosque del censo y los pasajes nuevos) con las huertas de enseñanza en los claros: hileras de cultivos, el sendero de madera, el pabellón de la escuela y el invernadero. Baja con el scroll para descender a la huerta: cada parada encuadra una especie y lo que hace; al final puedes recorrerla.</p>
+<a class="baja" href="#s1">Desliza ↓</a></div></section>` +
+  SEC.map(([k, b, t, n, d], i) => `<section id="s${i + 1}"><div class="tx"><div class="ey">${String(i + 1).padStart(2, '0')} · ${esc(t)}</div><h2>${esc(n)}</h2><p>${esc(d)}</p>
+  <span class="rel"><i style="background:${M.tipos[t] || '#fff'}"></i>${esc(n)} → ${esc((porK[b] || {}).n || '')}</span></div></section>`).join('') +
+  `<section id="s${SEC.length + 1}"><div class="tx"><div class="ey">La trama completa</div><h2>${M.rel.length} relaciones entre ${ESP.length} especies</h2>
+  <p>Polinizadores, aves que cuidan los cultivos y el suelo vivo trabajan para la huerta; los árboles existentes les dan refugio. Así se enseña a cultivar en Bavaria Común.</p>
+  <div class="fin"><button type="button" id="b-rec" class="rec">Recorrer la huerta</button><a href="index.html">Volver al simulador</a><a href="bavaria_interior.html?e=bio">Entrar a los edificios</a></div></div></section>`;
+$('prog').innerHTML = Array.from({ length: SEC.length + 2 }, (_, i) => `<a href="#s${i}" aria-label="Sección ${i}"></a>`).join('');
+$('nav').innerHTML = [['s0', 'Inicio'], ['s1', 'Polinización'], [`s${SEC.findIndex(s => s[2] === 'Cuidado de los cultivos') + 1}`, 'Cuidado'], [`s${SEC.findIndex(s => s[2] === 'Depredación') + 1}`, 'Suelo y aves'], [`s${SEC.length + 1}`, 'La trama']].map(([h, n]) => `<a href="#${h}">${n}</a>`).join('');
+
+/* ---------- escena de huertas en puntos: se arma en el navegador (data3d/puntos/escena_huerta.js) ---------- */
+const { crearEscenaHuerta } = await import('./data3d/puntos/escena_huerta.js?v=13');
+const ESC = await crearEscenaHuerta({ THREE, MOV, progreso: (f) => { $('cb').style.width = Math.round(f * 100) + '%'; } });
+const OJO = 1.6, n = ESC.n, pos = ESC.pos, col = ESC.col, rnd = new Float32Array(n).map(() => Math.random());
+for (let j = 1; j < pos.length; j += 3) pos[j] -= OJO; // el ojo queda en el origen
+M.eye = [0, 0, 0]; M.look = [0, -0.1, 1]; M.fov = 56; M.W = 16; M.H = 9;
+// las especies, sobre sus plantas de esta escena
+const RENOMBRA = { cilantro: ['Lavanda', 'Lavandula angustifolia', 'flor'], lechuga: ['Lechuga', 'Lactuca sativa', 'cultivo'], tomate: ['Tomate', 'Solanum lycopersicum', 'cultivo'], acelga: ['Brócoli', 'Brassica oleracea var. italica', 'cultivo'], zanahoria: ['Remolacha', 'Beta vulgaris', 'cultivo'], eucalipto: ['Árboles existentes', 'bosque de Bavaria', 'arbol'] };
+for (const e of ESP) { const a = ESC.anc[e.k]; if (a) e.p = [a[0], a[1] - OJO, a[2]]; const r = RENOMBRA[e.k]; if (r) { e.n = r[0]; e.sci = r[1]; e.g = r[2]; } }
+const cv = $('c'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+R.setPixelRatio(Math.min(2, devicePixelRatio || 1)); R.setClearColor(0x04070a, 1);
+const S = new THREE.Scene(), cam = new THREE.PerspectiveCamera(M.fov, innerWidth / innerHeight, 0.05, 6000);
+const U = { uT: { value: 0 }, uPx: { value: R.getPixelRatio() * innerHeight }, uIn: { value: 0 }, uZ: { value: 1 }, uModo: { value: 0 } };
+const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.setAttribute('r', new THREE.BufferAttribute(rnd, 1));
+// puntos finos, con un velo frío en la distancia (como la referencia) y brillo en los bordes de las hojas
+const mat = new THREE.ShaderMaterial({ uniforms: U, vertexColors: true, transparent: true, depthWrite: false,
+  vertexShader: `attribute float r; varying vec3 vC; varying float vA; uniform float uT, uPx, uIn, uZ, uModo;
+    void main(){ vec3 p = position; float h = fract(r * 91.7);
+      p += (vec3(fract(r*13.1), fract(r*7.3), fract(r*3.7)) - 0.5) * 0.002 * length(position);
+      if (p.y > 2.0) p.x += sin(uT * 1.1 + p.y * 0.5 + r * 6.0) * 0.012 * (p.y - 2.0); // copas que se mecen
+      float rise = smoothstep(r * 0.6, r * 0.6 + 0.4, uIn); p.y -= (1.0 - rise) * (2.0 + r * 6.0);
+      vec4 mv = modelViewMatrix * vec4(p, 1.0); gl_Position = projectionMatrix * mv; float d = -mv.z;
+      gl_PointSize = clamp(uPx * 0.0021 * uZ * (0.8 + h * 0.5) / max(d, 0.1) * 6.0, 1.2, 6.0 * uZ);
+      float lejos = smoothstep(45.0, 900.0, d); vec3 c = color * (0.84 + h * 0.3);
+      c = mix(c, vec3(0.5, 0.72, 0.7) * (0.55 + dot(color, vec3(.33))), lejos * 0.28); // velo frío a lo lejos
+      vC = c * mix(1.0, 0.7, smoothstep(200.0, 1200.0, d)); vA = rise * mix(1.0, 0.6, lejos);
+      float lum = dot(color, vec3(0.3, 0.55, 0.15)), vivo = clamp((color.g - max(color.r, color.b)) * 4.0 + 0.2, 0.0, 1.0);
+      if (uModo > 0.5 && uModo < 1.5) { gl_PointSize *= 2.6; vA = rise; vC = color * (0.92 + h * 0.16) * mix(1.0, 0.8, smoothstep(200.0, 1200.0, d)); }
+      if (uModo > 1.5 && uModo < 2.5) { float t = clamp(d / 260.0, 0.0, 1.0); vec3 c1 = vec3(1.0, 0.55, 0.18), c2 = vec3(0.2, 0.85, 0.75), c3 = vec3(0.15, 0.25, 0.75);
+        vC = (t < 0.35 ? mix(c1, c2, t / 0.35) : mix(c2, c3, (t - 0.35) / 0.65)) * (0.55 + 0.45 * lum) * (0.8 + 0.4 * step(0.985, fract(d * 0.25))); vA = rise; }
+      if (uModo > 2.5 && uModo < 3.5) { vC = vec3(0.55, 0.78, 1.0) * (0.35 + 0.65 * lum); vA = rise * 0.16; }
+      if (uModo > 3.5 && uModo < 4.5) { float k = clamp(vivo * 0.75 + lum * 0.35 + h * 0.08, 0.0, 1.0);
+        vC = k < 0.33 ? mix(vec3(0.03, 0.0, 0.12), vec3(0.55, 0.0, 0.6), k / 0.33) : k < 0.66 ? mix(vec3(0.55, 0.0, 0.6), vec3(1.0, 0.35, 0.0), (k - 0.33) / 0.33) : mix(vec3(1.0, 0.35, 0.0), vec3(1.0, 0.95, 0.55), (k - 0.66) / 0.34); gl_PointSize *= 1.6; vA = rise; }
+      if (uModo > 4.5) { float g2 = (0.25 + 1.1 * lum) * (0.85 + 0.3 * fract(sin(dot(position.xz, vec2(12.9, 78.2)) + uT * 30.0) * 43758.5)); vC = vec3(0.25, 1.0, 0.35) * g2; gl_PointSize *= 1.5; vA = rise; } }`,
+  fragmentShader: `varying vec3 vC; varying float vA; void main(){ vec2 q = gl_PointCoord - 0.5; float d = dot(q, q); if (d > 0.25) discard; gl_FragColor = vec4(vC, vA * smoothstep(0.25, 0.1, d));
+    #include <colorspace_fragment>
+  }` });
+const NUBEP = new THREE.Points(g, mat); S.add(NUBEP);
+/* ---------- la misma escena en MALLAS 3D para las otras visiones (data3d/puntos/escena_mallas.js) ---------- */
+R.shadowMap.enabled = !MOV; R.shadowMap.type = THREE.PCFSoftShadowMap; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
+const { crearEscenaMallas } = await import('./data3d/puntos/escena_mallas.js?v=7');
+const MAL = await crearEscenaMallas({ THREE, geo: ESC.geo, sombras: !MOV, movil: MOV }); MAL.grupo.position.y = -OJO; MAL.grupo.visible = false; S.add(MAL.grupo);
+
+/* ---------- especies en PUNTOS desde fotografías (tools/puntos/especies_puntos.py) ---------- */
+const EI = await fetch('data3d/puntos/esp/esp.json?v=1').then(r => r.json()).catch(() => ({}));
+const NUBE = {}; await Promise.all(Object.keys(EI).map(async k => { const b = new Uint8Array(await fetch(`data3d/puntos/esp/${k}.bin?v=1`).then(r => r.arrayBuffer())); NUBE[k] = { n: EI[k].n, q: new Int16Array(b.buffer, 0, EI[k].n * 3), c: b.subarray(EI[k].n * 6) }; }));
+const matEsp = (uPx, tam) => new THREE.ShaderMaterial({ uniforms: { uPx, uTam: { value: tam } }, vertexColors: true,
+  vertexShader: 'uniform float uPx, uTam; varying vec3 vC; void main(){ vC = color; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = clamp(uTam * uPx / max(-mv.z, 0.02), 1.2, 9.0); }',
+  fragmentShader: 'varying vec3 vC; void main(){ vec2 q = gl_PointCoord - 0.5; if (dot(q,q) > 0.25) discard; gl_FragColor = vec4(vC, 1.0);\n#include <colorspace_fragment>\n}' });
+const geoEsp = (k, max) => { const E = NUBE[k], st = Math.max(1, Math.floor(E.n / max)), m = Math.floor(E.n / st), P = new Float32Array(m * 3), C = new Float32Array(m * 3);
+  for (let i = 0, j = 0; j < m; i += st, j++) { for (let a = 0; a < 3; a++) { P[j * 3 + a] = E.q[i * 3 + a] / 1000; C[j * 3 + a] = Math.pow(E.c[i * 3 + a] / 255, 2.2); } } // los colores de la foto vienen en sRGB
+  const gg = new THREE.BufferGeometry(); gg.setAttribute('position', new THREE.BufferAttribute(P, 3)); gg.setAttribute('color', new THREE.BufferAttribute(C, 3)); return gg; };
+// tamaño en la escena (m): real × aumento para que se lea a la distancia de la vista
+const TAM = { colibri: 0.12 * 1.6, abeja: 0.02 * 4, abejorro: 0.028 * 3.5, mariposa: 0.08 * 2, mariquita: 0.009 * 5, mirla: 0.27 * 1.2, copeton: 0.15 * 1.3, lombriz: 0.12 * 1.2, murcielago: 0.1 * 2.2 };
+const SUELO = { mirla: 1, copeton: 1, lombriz: 1, mariquita: 1 }, BILL = [];
+const FZ = await import('./data3d/puntos/fauna_puntos.js?v=2'); await FZ.cargarFauna(THREE);
+const MATF = []; // materiales de la fauna 3D (su reloj de aleteo)
+const modelo = (k) => { if (FZ.tieneFauna(k)) { const w = new THREE.Group(), s = TAM[k] || 0.2, p = FZ.puntosFauna(THREE, k, U.uPx, 0.012 * s, MOV ? 9000 : 40000); p.scale.multiplyScalar(s); w.add(p); MATF.push(p.material); return w; }
+  if (!NUBE[k]) return null; const w = new THREE.Group(), s = TAM[k] || 0.2, pts = new THREE.Points(geoEsp(k, MOV ? 2500 : 6000), matEsp(U.uPx, 0.0016 * s * 6));
+  pts.scale.setScalar(s); if (SUELO[k]) pts.position.y = s * 0.5; w.add(pts); BILL.push(pts); return w; }; // (la fauna 3D no entra a BILL)
+const { crearFauna3D } = await import('./data3d/puntos/fauna3d.js?v=9');
+const FAUNA = crearFauna3D({ THREE, S, M, RMQ, modelo });
+
+// sensores de la huerta (suelo, riego, polinizadores): puntos que titilan sobre las camas
+{ const SP = []; for (let j = 0; j < n && SP.length < (MOV ? 30 : 60); j += 97) { const x = pos[j * 3], y = pos[j * 3 + 1], z = pos[j * 3 + 2], gC = col[j * 3 + 1];
+    if (y > -1.35 && y < -0.85 && Math.hypot(x, z) < 30 && gC > col[j * 3] * 1.15) SP.push(x, y + 0.35, z); }
+  const gs = new THREE.BufferGeometry(); gs.setAttribute('position', new THREE.Float32BufferAttribute(SP, 3)); const ph = new Float32Array(SP.length / 3).map(() => Math.random() * 6.28); gs.setAttribute('ph', new THREE.BufferAttribute(ph, 1));
+  S.add(new THREE.Points(gs, new THREE.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: 'attribute float ph; uniform float uT, uPx; varying float vA; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0); gl_Position = projectionMatrix * mv; vA = 0.25 + 0.75 * pow(0.5 + 0.5 * sin(uT * 2.0 + ph), 4.0); gl_PointSize = clamp(uPx * 0.006 / max(-mv.z, 0.5) * 6.0, 2.0, 9.0); }',
+    fragmentShader: 'varying float vA; void main(){ vec2 q = gl_PointCoord - 0.5; float d = dot(q,q); if (d > 0.25) discard; gl_FragColor = vec4(0.5, 1.0, 0.86, vA * smoothstep(0.25, 0.0, d));\n#include <colorspace_fragment>\n}' }))); }
+
+/* ---------- recuadro grande: la especie en puntos, girando despacio ---------- */
+const camZ = new THREE.PerspectiveCamera(32, 1, 0.01, 400); const zoomV = new THREE.Vector3(); let zA = 0; // cámara del recuadro
+const SI = new THREE.Scene(), camI = new THREE.PerspectiveCamera(30, 1, 0.01, 50); camI.position.set(0, 0, 2.3); const uPxI = { value: 512 * Math.min(2, devicePixelRatio || 1) };
+const INS = {}; for (const [k] of SEC) if (false && NUBE[k]) { const p = new THREE.Points(geoEsp(k, 90000), matEsp(uPxI, 0.0032)); p.visible = false; SI.add(p); INS[k] = p; }
+
+/* ---------- cámara guiada por el scroll ---------- */
+const L0 = new THREE.Vector3(M.look[0] - M.eye[0], M.look[1] - M.eye[1], M.look[2] - M.eye[2]).normalize();
+const lookBase = L0.clone().multiplyScalar(10), look = lookBase.clone(), tmp = new THREE.Vector3();
+// la foto es 4:3: en pantallas más anchas se cierra el campo vertical para que la foto llene el ancho
+const FOV0 = () => { const a = innerWidth / innerHeight, ap = (M.W || 4) / (M.H || 3); return a > ap ? 2 * Math.atan(Math.tan(M.fov * Math.PI / 360) * ap / a) * 180 / Math.PI : M.fov; };
+let s = 0, sObj = 0, fov = FOV0();
+const agenteDe = (k) => { const c = FAUNA.agentes.filter(a => a.k === k); return c.find(a => a.espera > 0) || c[0]; };
+const SEL = {}; SEC.forEach(([k]) => { SEL[k] = agenteDe(k); });
+const cam0 = new THREE.PerspectiveCamera(M.fov, innerWidth / innerHeight, 0.05, 3000); cam0.lookAt(L0); cam0.updateMatrixWorld(); const vN = new THREE.Vector3();
+// la cámara no mira fuera de lo que se capturó (abajo y a los lados no hay puntos)
+const dentroCaptura = (v) => v; const _dc = (v) => { vN.copy(v).project(cam0); vN.x = Math.max(-0.38, Math.min(0.38, vN.x)); vN.y = Math.max(-0.4, Math.min(0.45, vN.y)); return v.copy(vN.unproject(cam0)); };
+const CTX = ESC.ctx, AER = CTX ? new THREE.Vector3(CTX.c[0] - CTX.R * 0.18, CTX.R * 0.62, CTX.c[1] - CTX.R * 0.55) : new THREE.Vector3(-34, 118, -48), AERL = CTX ? new THREE.Vector3(CTX.c[0], -1.6, CTX.c[1]) : new THREE.Vector3(0, -1.6, 58), camPos = new THREE.Vector3(); // Bavaria real desde arriba
+const objetivo = (i) => { if (i <= 0 || i > SEC.length) return lookBase; const a = SEL[SEC[i - 1][0]]; return a ? a.obj.position : lookBase; };
+function leerScroll() { sObj = scrollY / innerHeight; }
+addEventListener('scroll', leerScroll, { passive: true });
+function tam() { R.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); U.uPx.value = R.getPixelRatio() * innerHeight; leerScroll(); }
+addEventListener('resize', tam); tam();
+let FONDO = 0x04070a;
+const FONDOS = { puntos: 0x04070a, realista: 0xbfd4e2, maqueta: 0xebe8e2, rayos: 0x020611, alambre: 0x071a2e, termica: 0x05010a };
+document.querySelector('.pie .modos').onclick = (e) => { const b = e.target.closest('[data-m]'); if (!b) return; const v = b.dataset.m;
+  NUBEP.visible = v === 'puntos'; MAL.grupo.visible = v !== 'puntos'; if (v !== 'puntos') MAL.vision(v);
+  FONDO = FONDOS[v]; R.setClearColor(FONDO, 1); S.fog = v === 'realista' ? new THREE.Fog(0xbfd4e2, 900, 4000) : v === 'maqueta' ? new THREE.Fog(0xebe8e2, 1100, 4500) : null;
+  document.body.dataset.vision = v; document.querySelectorAll('.pie .modos button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); };
+$('pausa').onclick = () => { RMQ = !RMQ; $('pausa').textContent = RMQ ? 'Reanudar movimiento' : 'Pausar movimiento'; };
+$('nota').textContent = 'Escena de la propuesta en puntos: árboles y plantas muestreados de modelos 3D reales; especies reconstruidas con puntos desde fotografías (iNaturalist, CC) y una profundidad estimada. Representación, no un levantamiento. Animales aumentados para que se vean. ' + FZ.FAUNA_FUENTES;
+
+/* ---------- RECORRER: caminar libre por la huerta ---------- */
+const lib = { on: false, x: 0, z: 0, yaw: 0, pitch: -0.1, k: {}, drag: null };
+const entrar = () => { lib.on = true; lib.x = cam.position.x; lib.z = cam.position.z; const d = new THREE.Vector3(); cam.getWorldDirection(d); lib.yaw = Math.atan2(d.x, d.z); lib.pitch = Math.asin(d.y); document.body.classList.add('libre'); scrollTo(0, 0); };
+const salir = () => { lib.on = false; document.body.classList.remove('libre'); fov = FOV0(); };
+$('b-rec').onclick = entrar; $('b-salir').onclick = salir;
+addEventListener('keydown', (e) => { lib.k[e.key.toLowerCase()] = true; if (e.key === 'Escape' && lib.on) salir(); });
+addEventListener('keyup', (e) => { lib.k[e.key.toLowerCase()] = false; });
+cv.addEventListener('pointerdown', (e) => { if (!lib.on) return; lib.drag = { x: e.clientX, y: e.clientY, yaw: lib.yaw, p: lib.pitch }; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointermove', (e) => { if (!lib.drag) return; lib.yaw = lib.drag.yaw - (e.clientX - lib.drag.x) * 0.004; lib.pitch = Math.max(-0.9, Math.min(0.6, lib.drag.p - (e.clientY - lib.drag.y) * 0.004)); });
+cv.addEventListener('pointerup', () => { lib.drag = null; });
+addEventListener('wheel', (e) => { if (!lib.on) return; e.preventDefault(); lib.x += Math.sin(lib.yaw) * -Math.sign(e.deltaY) * 1.2; lib.z += Math.cos(lib.yaw) * -Math.sign(e.deltaY) * 1.2; }, { passive: false });
+function caminar(dt) { const k = lib.k, v = (k.shift ? 9 : 3.5) * dt; let f = 0, l = 0; if (k.w || k.arrowup) f++; if (k.s || k.arrowdown) f--; if (k.a || k.arrowleft) l++; if (k.d || k.arrowright) l--;
+  lib.x += (Math.sin(lib.yaw) * f + Math.cos(lib.yaw) * l) * v; lib.z += (Math.cos(lib.yaw) * f - Math.sin(lib.yaw) * l) * v; lib.x = Math.max(-80, Math.min(80, lib.x)); lib.z = Math.max(-5, Math.min(70, lib.z));
+  fov += (FOV0() - fov) * 0.1; cam.fov = fov; cam.updateProjectionMatrix(); cam.position.set(lib.x, 0, lib.z); cam.lookAt(lib.x + Math.sin(lib.yaw) * Math.cos(lib.pitch), Math.sin(lib.pitch), lib.z + Math.cos(lib.yaw) * Math.cos(lib.pitch)); U.uZ.value = 1; }
+/* ---------- cuadro ---------- */
+const V = new THREE.Vector3(), V2 = new THREE.Vector3(); let t0 = performance.now(), tPrev = t0, secAct = -1;
+$('carga').style.opacity = 0; setTimeout(() => $('carga').remove(), 900);
+function cuadro(t) {
+  requestAnimationFrame(cuadro); const dt = Math.min(0.05, (t - tPrev) / 1000); tPrev = t; const tt = (t - t0) / 1000;
+  U.uT.value = RMQ ? 0 : tt; U.uIn.value = Math.min(1, tt / 2.2);
+  if (!RMQ) FAUNA.paso(dt, tt); for (const m of MATF) m.uniforms.uT.value = RMQ ? 0 : tt;
+  if (lib.on) { caminar(dt); for (const p of BILL) { p.getWorldPosition(V); p.lookAt(V2.copy(cam.position)); } R.render(S, cam); return; }
+  s += (sObj - s) * (1 - Math.exp(-dt * 4)); const i0 = Math.floor(s), f = s - i0, k = f * f * (3 - 2 * f);
+  // mira hacia la especie de la parada (y entre paradas, mezcla las dos); se acerca con el zoom
+  const A = i0 <= 0 ? AERL : objetivo(i0), B = objetivo(i0 + 1); const kA = i0 <= 0 ? k : 1; camPos.copy(AER).lerp(V2.set(0, 0, 0), kA); tmp.copy(A).lerp(B, k); dentroCaptura(tmp); look.lerp(tmp, 1 - Math.exp(-dt * 5));
+  const zIn = (i) => (i <= 0 || i > SEC.length ? FOV0() : Math.max(9, Math.min(FOV0() * 0.75, 2 * Math.atan(1.1 / Math.max(0.5, objetivo(i).length())) * 180 / Math.PI)));
+  const fz = zIn(i0) + (zIn(i0 + 1) - zIn(i0)) * k; fov += (fz - fov) * (1 - Math.exp(-dt * 4));
+  cam.position.copy(camPos); cam.fov = fov; cam.updateProjectionMatrix(); cam.lookAt(look); U.uZ.value = Math.min(3, Math.pow(FOV0() / fov, 0.6)) * (1 + 1.6 * (1 - kA));
+  for (const p of BILL) { p.getWorldPosition(V); p.lookAt(V2.copy(cam.position)); }
+  R.render(S, cam);
+  // parada actual: recuadro grande, encuadre y su hilo
+  const sec = Math.round(s), dentro = sec >= 1 && sec <= SEC.length && Math.abs(s - sec) < 0.38;
+  if (sec !== secAct) { secAct = sec; document.querySelectorAll('#prog a').forEach((a, j) => a.classList.toggle('on', j === sec));
+    for (const kk in INS) INS[kk].visible = false;
+    if (sec >= 1 && sec <= SEC.length) { const [kk, , , nn] = SEC[sec - 1], e = porK[kk]; if (INS[kk]) INS[kk].visible = true;
+      $('inset').querySelector('.n').textContent = String(sec).padStart(2, '0'); $('inset').querySelector('.cap').innerHTML = `${esc(nn)}<i>${esc(e.sci)}</i>`; $('enc').querySelector('em').textContent = nn;
+      $('inset').style.left = '55%'; } }
+  $('inset').classList.toggle('on', dentro); $('enc').classList.toggle('on', dentro);
+  if (dentro) { const kk = SEC[sec - 1][0], ins = INS[kk];
+    { const ag2 = SEL[kk]; if (ag2) { const r = $('inset').getBoundingClientRect(), dpr = R.getPixelRatio(), s2 = TAM[kk] || 0.2, d = Math.max(0.35, s2 * 4.5);
+        zA += RMQ ? 0 : dt * 0.25; ag2.obj.getWorldPosition(zoomV);
+        camZ.position.set(zoomV.x + Math.sin(zA) * d, zoomV.y + d * 0.35, zoomV.z - Math.cos(zA) * d); camZ.lookAt(zoomV); camZ.aspect = r.width / r.height; camZ.updateProjectionMatrix();
+        const u0 = U.uPx.value, uz = U.uZ.value; U.uPx.value = r.height * dpr * 0.9; U.uZ.value = 1.6;
+        R.setScissorTest(true); const H = innerHeight; R.setViewport(r.left, H - r.bottom, r.width, r.height); R.setScissor(r.left, H - r.bottom, r.width, r.height);
+        R.setClearColor(0x0b100e, 1); R.clear(); R.render(S, camZ); R.setScissorTest(false); R.setViewport(0, 0, innerWidth, innerHeight); R.setClearColor(FONDO, 1); U.uPx.value = u0; U.uZ.value = uz; } }
+    const ag = SEL[kk]; if (ag) { V.copy(ag.obj.position).project(cam); const x = (V.x + 1) / 2 * innerWidth, y = (1 - V.y) / 2 * innerHeight, enc = $('enc');
+      const d = cam.position.distanceTo(ag.obj.position), px = Math.max(34, Math.min(140, (TAM[kk] || 0.2) * 2.4 / (2 * d * Math.tan(fov * Math.PI / 360)) * innerHeight));
+      enc.style.width = enc.style.height = px + 'px'; enc.style.transform = `translate(${x - px / 2}px,${y - px / 2}px)`;
+      const r = $('inset').getBoundingClientRect(), hl = $('hl'), cx = x < r.left ? r.left : r.right, cy = r.top + r.height / 2;
+      hl.setAttribute('x1', x + (cx > x ? px / 2 : -px / 2)); hl.setAttribute('y1', y); hl.setAttribute('x2', cx); hl.setAttribute('y2', Math.max(r.top + 8, Math.min(r.bottom - 8, y))); hl.style.opacity = MOV ? 0 : 1; } }
+  else $('hl').style.opacity = 0;
+}
+requestAnimationFrame(cuadro);
+</script>
+</body>
+</html>

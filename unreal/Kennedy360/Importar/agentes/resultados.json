@@ -1,0 +1,3540 @@
+{
+ "semilla": 20261102,
+ "parametros_alimentos": {
+  "dias": 120,
+  "demanda_tienda_kg": {
+   "hortalizas": 30,
+   "hongos": 0,
+   "frutas": 25,
+   "granos_tuberculos": 40,
+   "carne_lacteos": 25
+  },
+  "kg_racion": 0.45,
+  "reparto_racion": {
+   "hortalizas": 0.3,
+   "hongos": 0.0,
+   "frutas": 0.15,
+   "granos_tuberculos": 0.35,
+   "carne_lacteos": 0.2
+  },
+  "sustitucion_carne_hongos": 0.15,
+  "otros_canales": 0.15,
+  "rend_huerta_kg_m2_dia": 0.00821917808219178,
+  "frac_cultivo_polinizado": 0.35,
+  "polin_media_saturacion": 20.0,
+  "compost_bonus": 0.15,
+  "hongos_kg_dia_max": 700,
+  "energia_respaldo": 0.6,
+  "apagon": [
+   40,
+   44
+  ],
+  "conjunta_cap_kg_dia": 3500,
+  "precio_cora": 1.0,
+  "precio_acopio": 0.97,
+  "costo_viaje_kg_km": 0.012,
+  "elasticidad_cora": 0.35,
+  "aprendizaje": 0.15,
+  "cesion_area": 0.208
+ },
+ "fauna": {
+  "actual": {
+   "escenario": "actual",
+   "segundos_simulados": 600.0,
+   "pasos": 4800,
+   "flores": 24,
+   "flores_cultivo": 0,
+   "visitas_por_flor_hora_cultivo": 0.0,
+   "polinizaciones_por_flor_hora_cultivo": 0.0,
+   "visitas_flora_ronda_hora": 1938.0,
+   "visitas_a_flor_vacia": 6209,
+   "nectar": {
+    "producido": 42.973,
+    "consumido": 41.589,
+    "en_flores": 1.383
+   },
+   "insectos": {
+    "emergidos": 1474,
+    "comidos_por_golondrinas": 983,
+    "vivos": 491,
+    "capturas_por_golondrina_min": 1.6383333333333332
+   },
+   "rapaz": {
+    "ataques": 24,
+    "capturas": 0
+   },
+   "bandadas": {
+    "polarizacion_golondrinas_media": 0.5117146612828886,
+    "giro_golondrinas_media": 0.3571557563602243,
+    "polarizacion_torcazas_media": 0.8325868516076284,
+    "cohesion_enjambre_media": 0.15891790606480447
+   }
+  },
+  "propuesto": {
+   "escenario": "propuesto",
+   "segundos_simulados": 600.0,
+   "pasos": 4800,
+   "flores": 168,
+   "flores_cultivo": 108,
+   "visitas_por_flor_hora_cultivo": 48.44444444444445,
+   "polinizaciones_por_flor_hora_cultivo": 45.666666666666664,
+   "visitas_flora_ronda_hora": 942.0,
+   "visitas_a_flor_vacia": 12024,
+   "nectar": {
+    "producido": 259.102,
+    "consumido": 170.961,
+    "en_flores": 88.142
+   },
+   "insectos": {
+    "emergidos": 1474,
+    "comidos_por_golondrinas": 983,
+    "vivos": 491,
+    "capturas_por_golondrina_min": 1.6383333333333332
+   },
+   "rapaz": {
+    "ataques": 24,
+    "capturas": 0
+   },
+   "bandadas": {
+    "polarizacion_golondrinas_media": 0.5117146612828886,
+    "giro_golondrinas_media": 0.3571557563602243,
+    "polarizacion_torcazas_media": 0.8325868516076284,
+    "cohesion_enjambre_media": 0.15891790606480447
+   }
+  }
+ },
+ "alimentos": {
+  "actual": {
+   "dependencia_volumen_dia_final": 0.85,
+   "dependencia_volumen_ult30": 0.85,
+   "dependencia_minima": 0.85,
+   "dependencia_en_dias_de_apagon": 0.85,
+   "hongos_entregados_dias_de_apagon_kg": 0.0,
+   "factor_polinizacion_huertas": 0.898,
+   "consumo_kg_dia": 21030.0,
+   "via_corabastos_kg_dia": 17875.5,
+   "via_acopio_kg_dia": 0.0,
+   "local_kg_dia": 0.0,
+   "conjunta_kg_dia": 0.0,
+   "precio_corabastos_final": 1.0,
+   "confianza_media_final": 0.0,
+   "viajes_dia_final": {
+    "comprador_cora": 112,
+    "comprador_acopio": 0,
+    "bicicarga": 0
+   },
+   "camiones_externos_dia_final": 2,
+   "por_grupo_dia_final": {
+    "hortalizas": {
+     "cora": 4628.2,
+     "acopio": 0.0,
+     "otros": 816.7
+    },
+    "hongos": {
+     "cora": 0.0,
+     "acopio": 0.0,
+     "otros": 0.0
+    },
+    "frutas": {
+     "cora": 3538.1,
+     "acopio": 0.0,
+     "otros": 624.4
+    },
+    "granos_tuberculos": {
+     "cora": 6011.6,
+     "acopio": 0.0,
+     "otros": 1060.9
+    },
+    "carne_lacteos": {
+     "cora": 3697.5,
+     "acopio": 0.0,
+     "otros": 652.5
+    }
+   },
+   "cuentas_120_dias": {
+    "producido_local": 0.0,
+    "conjunta": 0.0,
+    "corabastos": 2145060.0,
+    "otros": 378540.0,
+    "consumido": 2523600.0,
+    "perdido_local": 0.0
+   }
+  },
+  "propuesto": {
+   "dependencia_volumen_dia_final": 0.673,
+   "dependencia_volumen_ult30": 0.673,
+   "dependencia_minima": 0.673,
+   "dependencia_en_dias_de_apagon": 0.6938,
+   "hongos_entregados_dias_de_apagon_kg": 2610.0,
+   "factor_polinizacion_huertas": 0.898,
+   "consumo_kg_dia": 21030.0,
+   "via_corabastos_kg_dia": 14152.2,
+   "via_acopio_kg_dia": 4380.4,
+   "local_kg_dia": 880.4,
+   "conjunta_kg_dia": 3500.0,
+   "precio_corabastos_final": 0.9271,
+   "confianza_media_final": 0.6084,
+   "viajes_dia_final": {
+    "comprador_cora": 88,
+    "comprador_acopio": 4,
+    "bicicarga": 152
+   },
+   "camiones_externos_dia_final": 2,
+   "por_grupo_dia_final": {
+    "hortalizas": {
+     "cora": 4434.6,
+     "acopio": 227.9,
+     "otros": 782.6
+    },
+    "hongos": {
+     "cora": 0.0,
+     "acopio": 652.5,
+     "otros": 0.0
+    },
+    "frutas": {
+     "cora": 2050.6,
+     "acopio": 1750.0,
+     "otros": 361.9
+    },
+    "granos_tuberculos": {
+     "cora": 4524.1,
+     "acopio": 1750.0,
+     "otros": 798.4
+    },
+    "carne_lacteos": {
+     "cora": 3142.9,
+     "acopio": 0.0,
+     "otros": 554.6
+    }
+   },
+   "cuentas_120_dias": {
+    "producido_local": 96962.4,
+    "conjunta": 339500.0,
+    "corabastos": 1780340.5,
+    "otros": 314177.7,
+    "consumido": 2523600.0,
+    "perdido_local": 2150.0
+   }
+  },
+  "propuesto_apagon": {
+   "dependencia_volumen_dia_final": 0.673,
+   "dependencia_volumen_ult30": 0.673,
+   "dependencia_minima": 0.673,
+   "dependencia_en_dias_de_apagon": 0.7032,
+   "hongos_entregados_dias_de_apagon_kg": 1680.0,
+   "factor_polinizacion_huertas": 0.898,
+   "consumo_kg_dia": 21030.0,
+   "via_corabastos_kg_dia": 14152.2,
+   "via_acopio_kg_dia": 4380.4,
+   "local_kg_dia": 880.4,
+   "conjunta_kg_dia": 3500.0,
+   "precio_corabastos_final": 0.9271,
+   "confianza_media_final": 0.6084,
+   "viajes_dia_final": {
+    "comprador_cora": 88,
+    "comprador_acopio": 4,
+    "bicicarga": 152
+   },
+   "camiones_externos_dia_final": 2,
+   "por_grupo_dia_final": {
+    "hortalizas": {
+     "cora": 4434.6,
+     "acopio": 227.9,
+     "otros": 782.6
+    },
+    "hongos": {
+     "cora": 0.0,
+     "acopio": 652.5,
+     "otros": 0.0
+    },
+    "frutas": {
+     "cora": 2050.6,
+     "acopio": 1750.0,
+     "otros": 361.9
+    },
+    "granos_tuberculos": {
+     "cora": 4524.1,
+     "acopio": 1750.0,
+     "otros": 798.4
+    },
+    "carne_lacteos": {
+     "cora": 3142.9,
+     "acopio": 0.0,
+     "otros": 554.6
+    }
+   },
+   "cuentas_120_dias": {
+    "producido_local": 95842.4,
+    "conjunta": 339500.0,
+    "corabastos": 1781344.4,
+    "otros": 314354.9,
+    "consumido": 2523600.0,
+    "perdido_local": 2055.0
+   }
+  }
+ },
+ "serie_diaria": {
+  "actual": [
+   {
+    "dia": 0,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 1,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 2,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 3,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 4,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 5,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 6,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 7,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 8,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 9,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 10,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 11,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 12,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 13,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 14,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 15,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 16,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 17,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 18,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 19,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 20,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 21,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 22,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 23,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 24,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 25,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 26,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 27,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 28,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 29,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 30,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 31,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 32,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 33,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 34,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 35,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 36,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 37,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 38,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 39,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 40,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 41,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 42,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 43,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 44,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 45,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 46,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 47,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 48,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 49,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 50,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 51,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 52,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 53,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 54,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 55,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 56,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 57,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 58,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 59,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 60,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 61,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 62,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 63,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 64,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 65,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 66,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 67,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 68,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 69,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 70,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 71,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 72,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 73,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 74,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 75,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 76,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 77,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 78,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 79,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 80,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 81,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 82,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 83,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 84,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 85,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 86,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 87,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 88,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 89,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 90,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 91,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 92,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 93,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 94,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 95,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 96,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 97,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 98,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 99,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 100,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 101,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 102,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 103,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 104,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 105,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 106,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 107,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 108,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 109,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 110,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 111,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 112,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 113,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 114,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 115,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 116,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 117,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 118,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 119,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   }
+  ],
+  "propuesto": [
+   {
+    "dia": 0,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 1,
+    "dependencia_volumen": 0.8456,
+    "precio_corabastos": 0.9982,
+    "confianza_media": 0.0015,
+    "local_kg": 30.9,
+    "conjunta_kg": 77.8,
+    "via_corabastos_kg": 17783.1
+   },
+   {
+    "dia": 2,
+    "dependencia_volumen": 0.8412,
+    "precio_corabastos": 0.9964,
+    "confianza_media": 0.005,
+    "local_kg": 61.9,
+    "conjunta_kg": 155.6,
+    "via_corabastos_kg": 17690.7
+   },
+   {
+    "dia": 3,
+    "dependencia_volumen": 0.8368,
+    "precio_corabastos": 0.9946,
+    "confianza_media": 0.0098,
+    "local_kg": 92.8,
+    "conjunta_kg": 233.3,
+    "via_corabastos_kg": 17598.3
+   },
+   {
+    "dia": 4,
+    "dependencia_volumen": 0.8324,
+    "precio_corabastos": 0.9928,
+    "confianza_media": 0.0166,
+    "local_kg": 123.7,
+    "conjunta_kg": 311.1,
+    "via_corabastos_kg": 17505.9
+   },
+   {
+    "dia": 5,
+    "dependencia_volumen": 0.828,
+    "precio_corabastos": 0.991,
+    "confianza_media": 0.023,
+    "local_kg": 154.6,
+    "conjunta_kg": 388.9,
+    "via_corabastos_kg": 17413.5
+   },
+   {
+    "dia": 6,
+    "dependencia_volumen": 0.8236,
+    "precio_corabastos": 0.9891,
+    "confianza_media": 0.0322,
+    "local_kg": 185.6,
+    "conjunta_kg": 466.7,
+    "via_corabastos_kg": 17321.1
+   },
+   {
+    "dia": 7,
+    "dependencia_volumen": 0.8192,
+    "precio_corabastos": 0.9873,
+    "confianza_media": 0.0415,
+    "local_kg": 216.5,
+    "conjunta_kg": 544.4,
+    "via_corabastos_kg": 17228.7
+   },
+   {
+    "dia": 8,
+    "dependencia_volumen": 0.8148,
+    "precio_corabastos": 0.9855,
+    "confianza_media": 0.0522,
+    "local_kg": 247.4,
+    "conjunta_kg": 622.2,
+    "via_corabastos_kg": 17136.3
+   },
+   {
+    "dia": 9,
+    "dependencia_volumen": 0.8105,
+    "precio_corabastos": 0.9837,
+    "confianza_media": 0.0635,
+    "local_kg": 278.4,
+    "conjunta_kg": 700.0,
+    "via_corabastos_kg": 17043.9
+   },
+   {
+    "dia": 10,
+    "dependencia_volumen": 0.8061,
+    "precio_corabastos": 0.9819,
+    "confianza_media": 0.0758,
+    "local_kg": 309.3,
+    "conjunta_kg": 777.8,
+    "via_corabastos_kg": 16951.5
+   },
+   {
+    "dia": 11,
+    "dependencia_volumen": 0.8017,
+    "precio_corabastos": 0.9801,
+    "confianza_media": 0.0916,
+    "local_kg": 340.2,
+    "conjunta_kg": 855.6,
+    "via_corabastos_kg": 16859.1
+   },
+   {
+    "dia": 12,
+    "dependencia_volumen": 0.7973,
+    "precio_corabastos": 0.9783,
+    "confianza_media": 0.1058,
+    "local_kg": 371.1,
+    "conjunta_kg": 933.3,
+    "via_corabastos_kg": 16766.7
+   },
+   {
+    "dia": 13,
+    "dependencia_volumen": 0.7929,
+    "precio_corabastos": 0.9765,
+    "confianza_media": 0.1221,
+    "local_kg": 402.1,
+    "conjunta_kg": 1011.1,
+    "via_corabastos_kg": 16674.3
+   },
+   {
+    "dia": 14,
+    "dependencia_volumen": 0.7885,
+    "precio_corabastos": 0.9747,
+    "confianza_media": 0.1357,
+    "local_kg": 433.0,
+    "conjunta_kg": 1088.9,
+    "via_corabastos_kg": 16581.9
+   },
+   {
+    "dia": 15,
+    "dependencia_volumen": 0.7841,
+    "precio_corabastos": 0.9729,
+    "confianza_media": 0.1471,
+    "local_kg": 463.9,
+    "conjunta_kg": 1166.7,
+    "via_corabastos_kg": 16489.5
+   },
+   {
+    "dia": 16,
+    "dependencia_volumen": 0.7797,
+    "precio_corabastos": 0.9711,
+    "confianza_media": 0.1667,
+    "local_kg": 494.9,
+    "conjunta_kg": 1244.4,
+    "via_corabastos_kg": 16397.1
+   },
+   {
+    "dia": 17,
+    "dependencia_volumen": 0.7753,
+    "precio_corabastos": 0.9692,
+    "confianza_media": 0.1816,
+    "local_kg": 525.8,
+    "conjunta_kg": 1322.2,
+    "via_corabastos_kg": 16304.7
+   },
+   {
+    "dia": 18,
+    "dependencia_volumen": 0.7709,
+    "precio_corabastos": 0.9674,
+    "confianza_media": 0.1984,
+    "local_kg": 556.7,
+    "conjunta_kg": 1400.0,
+    "via_corabastos_kg": 16212.3
+   },
+   {
+    "dia": 19,
+    "dependencia_volumen": 0.7665,
+    "precio_corabastos": 0.9656,
+    "confianza_media": 0.2145,
+    "local_kg": 587.7,
+    "conjunta_kg": 1477.8,
+    "via_corabastos_kg": 16119.9
+   },
+   {
+    "dia": 20,
+    "dependencia_volumen": 0.7621,
+    "precio_corabastos": 0.9638,
+    "confianza_media": 0.2277,
+    "local_kg": 618.6,
+    "conjunta_kg": 1555.6,
+    "via_corabastos_kg": 16027.5
+   },
+   {
+    "dia": 21,
+    "dependencia_volumen": 0.7577,
+    "precio_corabastos": 0.962,
+    "confianza_media": 0.2393,
+    "local_kg": 649.5,
+    "conjunta_kg": 1633.3,
+    "via_corabastos_kg": 15935.1
+   },
+   {
+    "dia": 22,
+    "dependencia_volumen": 0.7533,
+    "precio_corabastos": 0.9602,
+    "confianza_media": 0.2549,
+    "local_kg": 680.4,
+    "conjunta_kg": 1711.1,
+    "via_corabastos_kg": 15842.7
+   },
+   {
+    "dia": 23,
+    "dependencia_volumen": 0.7489,
+    "precio_corabastos": 0.9584,
+    "confianza_media": 0.2703,
+    "local_kg": 711.4,
+    "conjunta_kg": 1788.9,
+    "via_corabastos_kg": 15750.3
+   },
+   {
+    "dia": 24,
+    "dependencia_volumen": 0.7445,
+    "precio_corabastos": 0.9566,
+    "confianza_media": 0.2845,
+    "local_kg": 742.3,
+    "conjunta_kg": 1866.7,
+    "via_corabastos_kg": 15657.9
+   },
+   {
+    "dia": 25,
+    "dependencia_volumen": 0.7402,
+    "precio_corabastos": 0.9548,
+    "confianza_media": 0.2986,
+    "local_kg": 773.2,
+    "conjunta_kg": 1944.4,
+    "via_corabastos_kg": 15565.5
+   },
+   {
+    "dia": 26,
+    "dependencia_volumen": 0.7358,
+    "precio_corabastos": 0.953,
+    "confianza_media": 0.3144,
+    "local_kg": 804.2,
+    "conjunta_kg": 2022.2,
+    "via_corabastos_kg": 15473.1
+   },
+   {
+    "dia": 27,
+    "dependencia_volumen": 0.7314,
+    "precio_corabastos": 0.9512,
+    "confianza_media": 0.3286,
+    "local_kg": 835.1,
+    "conjunta_kg": 2100.0,
+    "via_corabastos_kg": 15380.7
+   },
+   {
+    "dia": 28,
+    "dependencia_volumen": 0.727,
+    "precio_corabastos": 0.9494,
+    "confianza_media": 0.342,
+    "local_kg": 865.2,
+    "conjunta_kg": 2177.8,
+    "via_corabastos_kg": 15289.0
+   },
+   {
+    "dia": 29,
+    "dependencia_volumen": 0.7239,
+    "precio_corabastos": 0.9481,
+    "confianza_media": 0.357,
+    "local_kg": 872.8,
+    "conjunta_kg": 2247.7,
+    "via_corabastos_kg": 15223.1
+   },
+   {
+    "dia": 30,
+    "dependencia_volumen": 0.7203,
+    "precio_corabastos": 0.9466,
+    "confianza_media": 0.3703,
+    "local_kg": 880.4,
+    "conjunta_kg": 2327.6,
+    "via_corabastos_kg": 15148.7
+   },
+   {
+    "dia": 31,
+    "dependencia_volumen": 0.7176,
+    "precio_corabastos": 0.9455,
+    "confianza_media": 0.3834,
+    "local_kg": 880.4,
+    "conjunta_kg": 2396.0,
+    "via_corabastos_kg": 15090.6
+   },
+   {
+    "dia": 32,
+    "dependencia_volumen": 0.7146,
+    "precio_corabastos": 0.9443,
+    "confianza_media": 0.396,
+    "local_kg": 880.4,
+    "conjunta_kg": 2469.4,
+    "via_corabastos_kg": 15028.2
+   },
+   {
+    "dia": 33,
+    "dependencia_volumen": 0.7118,
+    "precio_corabastos": 0.9431,
+    "confianza_media": 0.4069,
+    "local_kg": 880.4,
+    "conjunta_kg": 2539.6,
+    "via_corabastos_kg": 14968.5
+   },
+   {
+    "dia": 34,
+    "dependencia_volumen": 0.7092,
+    "precio_corabastos": 0.942,
+    "confianza_media": 0.4172,
+    "local_kg": 880.4,
+    "conjunta_kg": 2602.7,
+    "via_corabastos_kg": 14914.9
+   },
+   {
+    "dia": 35,
+    "dependencia_volumen": 0.7066,
+    "precio_corabastos": 0.941,
+    "confianza_media": 0.4289,
+    "local_kg": 880.4,
+    "conjunta_kg": 2666.4,
+    "via_corabastos_kg": 14860.8
+   },
+   {
+    "dia": 36,
+    "dependencia_volumen": 0.7038,
+    "precio_corabastos": 0.9398,
+    "confianza_media": 0.4403,
+    "local_kg": 880.4,
+    "conjunta_kg": 2736.4,
+    "via_corabastos_kg": 14801.3
+   },
+   {
+    "dia": 37,
+    "dependencia_volumen": 0.7012,
+    "precio_corabastos": 0.9387,
+    "confianza_media": 0.4494,
+    "local_kg": 880.4,
+    "conjunta_kg": 2801.1,
+    "via_corabastos_kg": 14746.2
+   },
+   {
+    "dia": 38,
+    "dependencia_volumen": 0.6989,
+    "precio_corabastos": 0.9378,
+    "confianza_media": 0.4596,
+    "local_kg": 880.4,
+    "conjunta_kg": 2859.3,
+    "via_corabastos_kg": 14696.8
+   },
+   {
+    "dia": 39,
+    "dependencia_volumen": 0.6963,
+    "precio_corabastos": 0.9367,
+    "confianza_media": 0.4694,
+    "local_kg": 880.4,
+    "conjunta_kg": 2923.2,
+    "via_corabastos_kg": 14642.4
+   },
+   {
+    "dia": 40,
+    "dependencia_volumen": 0.6938,
+    "precio_corabastos": 0.9357,
+    "confianza_media": 0.4781,
+    "local_kg": 880.4,
+    "conjunta_kg": 2983.0,
+    "via_corabastos_kg": 14591.6
+   },
+   {
+    "dia": 41,
+    "dependencia_volumen": 0.6915,
+    "precio_corabastos": 0.9347,
+    "confianza_media": 0.487,
+    "local_kg": 880.4,
+    "conjunta_kg": 3040.6,
+    "via_corabastos_kg": 14542.6
+   },
+   {
+    "dia": 42,
+    "dependencia_volumen": 0.6891,
+    "precio_corabastos": 0.9338,
+    "confianza_media": 0.495,
+    "local_kg": 880.4,
+    "conjunta_kg": 3099.3,
+    "via_corabastos_kg": 14492.8
+   },
+   {
+    "dia": 43,
+    "dependencia_volumen": 0.6869,
+    "precio_corabastos": 0.9329,
+    "confianza_media": 0.5036,
+    "local_kg": 880.4,
+    "conjunta_kg": 3154.1,
+    "via_corabastos_kg": 14446.2
+   },
+   {
+    "dia": 44,
+    "dependencia_volumen": 0.6846,
+    "precio_corabastos": 0.9319,
+    "confianza_media": 0.5119,
+    "local_kg": 880.4,
+    "conjunta_kg": 3211.7,
+    "via_corabastos_kg": 14397.2
+   },
+   {
+    "dia": 45,
+    "dependencia_volumen": 0.6824,
+    "precio_corabastos": 0.931,
+    "confianza_media": 0.5194,
+    "local_kg": 880.4,
+    "conjunta_kg": 3266.6,
+    "via_corabastos_kg": 14350.6
+   },
+   {
+    "dia": 46,
+    "dependencia_volumen": 0.6817,
+    "precio_corabastos": 0.9307,
+    "confianza_media": 0.5269,
+    "local_kg": 880.4,
+    "conjunta_kg": 3282.3,
+    "via_corabastos_kg": 14337.2
+   },
+   {
+    "dia": 47,
+    "dependencia_volumen": 0.6807,
+    "precio_corabastos": 0.9303,
+    "confianza_media": 0.5337,
+    "local_kg": 880.4,
+    "conjunta_kg": 3309.1,
+    "via_corabastos_kg": 14314.5
+   },
+   {
+    "dia": 48,
+    "dependencia_volumen": 0.6799,
+    "precio_corabastos": 0.9299,
+    "confianza_media": 0.5414,
+    "local_kg": 880.4,
+    "conjunta_kg": 3329.0,
+    "via_corabastos_kg": 14297.6
+   },
+   {
+    "dia": 49,
+    "dependencia_volumen": 0.6788,
+    "precio_corabastos": 0.9295,
+    "confianza_media": 0.546,
+    "local_kg": 880.4,
+    "conjunta_kg": 3355.6,
+    "via_corabastos_kg": 14274.9
+   },
+   {
+    "dia": 50,
+    "dependencia_volumen": 0.6784,
+    "precio_corabastos": 0.9293,
+    "confianza_media": 0.5512,
+    "local_kg": 880.4,
+    "conjunta_kg": 3366.1,
+    "via_corabastos_kg": 14266.0
+   },
+   {
+    "dia": 51,
+    "dependencia_volumen": 0.6776,
+    "precio_corabastos": 0.929,
+    "confianza_media": 0.5564,
+    "local_kg": 880.4,
+    "conjunta_kg": 3384.5,
+    "via_corabastos_kg": 14250.4
+   },
+   {
+    "dia": 52,
+    "dependencia_volumen": 0.677,
+    "precio_corabastos": 0.9288,
+    "confianza_media": 0.5607,
+    "local_kg": 880.4,
+    "conjunta_kg": 3400.1,
+    "via_corabastos_kg": 14237.1
+   },
+   {
+    "dia": 53,
+    "dependencia_volumen": 0.6764,
+    "precio_corabastos": 0.9285,
+    "confianza_media": 0.5653,
+    "local_kg": 880.4,
+    "conjunta_kg": 3413.6,
+    "via_corabastos_kg": 14225.7
+   },
+   {
+    "dia": 54,
+    "dependencia_volumen": 0.6759,
+    "precio_corabastos": 0.9283,
+    "confianza_media": 0.5697,
+    "local_kg": 880.4,
+    "conjunta_kg": 3427.8,
+    "via_corabastos_kg": 14213.6
+   },
+   {
+    "dia": 55,
+    "dependencia_volumen": 0.6754,
+    "precio_corabastos": 0.9281,
+    "confianza_media": 0.5725,
+    "local_kg": 880.4,
+    "conjunta_kg": 3440.1,
+    "via_corabastos_kg": 14203.1
+   },
+   {
+    "dia": 56,
+    "dependencia_volumen": 0.6751,
+    "precio_corabastos": 0.928,
+    "confianza_media": 0.5747,
+    "local_kg": 880.4,
+    "conjunta_kg": 3448.1,
+    "via_corabastos_kg": 14196.3
+   },
+   {
+    "dia": 57,
+    "dependencia_volumen": 0.6748,
+    "precio_corabastos": 0.9278,
+    "confianza_media": 0.5777,
+    "local_kg": 880.4,
+    "conjunta_kg": 3455.2,
+    "via_corabastos_kg": 14190.2
+   },
+   {
+    "dia": 58,
+    "dependencia_volumen": 0.6743,
+    "precio_corabastos": 0.9277,
+    "confianza_media": 0.5801,
+    "local_kg": 880.4,
+    "conjunta_kg": 3465.5,
+    "via_corabastos_kg": 14181.5
+   },
+   {
+    "dia": 59,
+    "dependencia_volumen": 0.6741,
+    "precio_corabastos": 0.9276,
+    "confianza_media": 0.5837,
+    "local_kg": 880.4,
+    "conjunta_kg": 3472.4,
+    "via_corabastos_kg": 14175.6
+   },
+   {
+    "dia": 60,
+    "dependencia_volumen": 0.6736,
+    "precio_corabastos": 0.9274,
+    "confianza_media": 0.5855,
+    "local_kg": 880.4,
+    "conjunta_kg": 3484.2,
+    "via_corabastos_kg": 14165.7
+   },
+   {
+    "dia": 61,
+    "dependencia_volumen": 0.6734,
+    "precio_corabastos": 0.9273,
+    "confianza_media": 0.5876,
+    "local_kg": 880.4,
+    "conjunta_kg": 3488.4,
+    "via_corabastos_kg": 14162.1
+   },
+   {
+    "dia": 62,
+    "dependencia_volumen": 0.6731,
+    "precio_corabastos": 0.9272,
+    "confianza_media": 0.5888,
+    "local_kg": 880.4,
+    "conjunta_kg": 3495.3,
+    "via_corabastos_kg": 14156.2
+   },
+   {
+    "dia": 63,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5904,
+    "local_kg": 880.4,
+    "conjunta_kg": 3499.7,
+    "via_corabastos_kg": 14152.4
+   },
+   {
+    "dia": 64,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5946,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 65,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5964,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 66,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5987,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 67,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5995,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 68,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 69,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6015,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 70,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6026,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 71,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6031,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 72,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6028,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 73,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6029,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 74,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6043,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 75,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6044,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 76,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6046,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 77,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6043,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 78,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6035,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 79,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6032,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 80,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6036,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 81,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6045,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 82,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6039,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 83,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.604,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 84,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6039,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 85,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6035,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 86,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6024,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 87,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6028,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 88,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.602,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 89,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6021,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 90,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6026,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 91,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6029,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 92,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6018,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 93,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.601,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 94,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6014,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 95,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6041,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 96,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6052,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 97,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6046,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 98,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6046,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 99,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6042,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 100,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6048,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 101,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6054,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 102,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6053,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 103,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6067,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 104,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6063,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 105,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6056,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 106,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6065,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 107,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6081,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 108,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6081,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 109,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6091,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 110,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.609,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 111,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6088,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 112,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6089,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 113,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6092,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 114,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6094,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 115,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6094,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 116,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6097,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 117,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.609,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 118,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6086,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 119,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6084,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   }
+  ],
+  "propuesto_apagon": [
+   {
+    "dia": 0,
+    "dependencia_volumen": 0.85,
+    "precio_corabastos": 1.0,
+    "confianza_media": 0.0,
+    "local_kg": 0.0,
+    "conjunta_kg": 0.0,
+    "via_corabastos_kg": 17875.5
+   },
+   {
+    "dia": 1,
+    "dependencia_volumen": 0.8456,
+    "precio_corabastos": 0.9982,
+    "confianza_media": 0.0015,
+    "local_kg": 30.9,
+    "conjunta_kg": 77.8,
+    "via_corabastos_kg": 17783.1
+   },
+   {
+    "dia": 2,
+    "dependencia_volumen": 0.8412,
+    "precio_corabastos": 0.9964,
+    "confianza_media": 0.005,
+    "local_kg": 61.9,
+    "conjunta_kg": 155.6,
+    "via_corabastos_kg": 17690.7
+   },
+   {
+    "dia": 3,
+    "dependencia_volumen": 0.8368,
+    "precio_corabastos": 0.9946,
+    "confianza_media": 0.0098,
+    "local_kg": 92.8,
+    "conjunta_kg": 233.3,
+    "via_corabastos_kg": 17598.3
+   },
+   {
+    "dia": 4,
+    "dependencia_volumen": 0.8324,
+    "precio_corabastos": 0.9928,
+    "confianza_media": 0.0166,
+    "local_kg": 123.7,
+    "conjunta_kg": 311.1,
+    "via_corabastos_kg": 17505.9
+   },
+   {
+    "dia": 5,
+    "dependencia_volumen": 0.828,
+    "precio_corabastos": 0.991,
+    "confianza_media": 0.023,
+    "local_kg": 154.6,
+    "conjunta_kg": 388.9,
+    "via_corabastos_kg": 17413.5
+   },
+   {
+    "dia": 6,
+    "dependencia_volumen": 0.8236,
+    "precio_corabastos": 0.9891,
+    "confianza_media": 0.0322,
+    "local_kg": 185.6,
+    "conjunta_kg": 466.7,
+    "via_corabastos_kg": 17321.1
+   },
+   {
+    "dia": 7,
+    "dependencia_volumen": 0.8192,
+    "precio_corabastos": 0.9873,
+    "confianza_media": 0.0415,
+    "local_kg": 216.5,
+    "conjunta_kg": 544.4,
+    "via_corabastos_kg": 17228.7
+   },
+   {
+    "dia": 8,
+    "dependencia_volumen": 0.8148,
+    "precio_corabastos": 0.9855,
+    "confianza_media": 0.0522,
+    "local_kg": 247.4,
+    "conjunta_kg": 622.2,
+    "via_corabastos_kg": 17136.3
+   },
+   {
+    "dia": 9,
+    "dependencia_volumen": 0.8105,
+    "precio_corabastos": 0.9837,
+    "confianza_media": 0.0635,
+    "local_kg": 278.4,
+    "conjunta_kg": 700.0,
+    "via_corabastos_kg": 17043.9
+   },
+   {
+    "dia": 10,
+    "dependencia_volumen": 0.8061,
+    "precio_corabastos": 0.9819,
+    "confianza_media": 0.0758,
+    "local_kg": 309.3,
+    "conjunta_kg": 777.8,
+    "via_corabastos_kg": 16951.5
+   },
+   {
+    "dia": 11,
+    "dependencia_volumen": 0.8017,
+    "precio_corabastos": 0.9801,
+    "confianza_media": 0.0916,
+    "local_kg": 340.2,
+    "conjunta_kg": 855.6,
+    "via_corabastos_kg": 16859.1
+   },
+   {
+    "dia": 12,
+    "dependencia_volumen": 0.7973,
+    "precio_corabastos": 0.9783,
+    "confianza_media": 0.1058,
+    "local_kg": 371.1,
+    "conjunta_kg": 933.3,
+    "via_corabastos_kg": 16766.7
+   },
+   {
+    "dia": 13,
+    "dependencia_volumen": 0.7929,
+    "precio_corabastos": 0.9765,
+    "confianza_media": 0.1221,
+    "local_kg": 402.1,
+    "conjunta_kg": 1011.1,
+    "via_corabastos_kg": 16674.3
+   },
+   {
+    "dia": 14,
+    "dependencia_volumen": 0.7885,
+    "precio_corabastos": 0.9747,
+    "confianza_media": 0.1357,
+    "local_kg": 433.0,
+    "conjunta_kg": 1088.9,
+    "via_corabastos_kg": 16581.9
+   },
+   {
+    "dia": 15,
+    "dependencia_volumen": 0.7841,
+    "precio_corabastos": 0.9729,
+    "confianza_media": 0.1471,
+    "local_kg": 463.9,
+    "conjunta_kg": 1166.7,
+    "via_corabastos_kg": 16489.5
+   },
+   {
+    "dia": 16,
+    "dependencia_volumen": 0.7797,
+    "precio_corabastos": 0.9711,
+    "confianza_media": 0.1667,
+    "local_kg": 494.9,
+    "conjunta_kg": 1244.4,
+    "via_corabastos_kg": 16397.1
+   },
+   {
+    "dia": 17,
+    "dependencia_volumen": 0.7753,
+    "precio_corabastos": 0.9692,
+    "confianza_media": 0.1816,
+    "local_kg": 525.8,
+    "conjunta_kg": 1322.2,
+    "via_corabastos_kg": 16304.7
+   },
+   {
+    "dia": 18,
+    "dependencia_volumen": 0.7709,
+    "precio_corabastos": 0.9674,
+    "confianza_media": 0.1984,
+    "local_kg": 556.7,
+    "conjunta_kg": 1400.0,
+    "via_corabastos_kg": 16212.3
+   },
+   {
+    "dia": 19,
+    "dependencia_volumen": 0.7665,
+    "precio_corabastos": 0.9656,
+    "confianza_media": 0.2145,
+    "local_kg": 587.7,
+    "conjunta_kg": 1477.8,
+    "via_corabastos_kg": 16119.9
+   },
+   {
+    "dia": 20,
+    "dependencia_volumen": 0.7621,
+    "precio_corabastos": 0.9638,
+    "confianza_media": 0.2277,
+    "local_kg": 618.6,
+    "conjunta_kg": 1555.6,
+    "via_corabastos_kg": 16027.5
+   },
+   {
+    "dia": 21,
+    "dependencia_volumen": 0.7577,
+    "precio_corabastos": 0.962,
+    "confianza_media": 0.2393,
+    "local_kg": 649.5,
+    "conjunta_kg": 1633.3,
+    "via_corabastos_kg": 15935.1
+   },
+   {
+    "dia": 22,
+    "dependencia_volumen": 0.7533,
+    "precio_corabastos": 0.9602,
+    "confianza_media": 0.2549,
+    "local_kg": 680.4,
+    "conjunta_kg": 1711.1,
+    "via_corabastos_kg": 15842.7
+   },
+   {
+    "dia": 23,
+    "dependencia_volumen": 0.7489,
+    "precio_corabastos": 0.9584,
+    "confianza_media": 0.2703,
+    "local_kg": 711.4,
+    "conjunta_kg": 1788.9,
+    "via_corabastos_kg": 15750.3
+   },
+   {
+    "dia": 24,
+    "dependencia_volumen": 0.7445,
+    "precio_corabastos": 0.9566,
+    "confianza_media": 0.2845,
+    "local_kg": 742.3,
+    "conjunta_kg": 1866.7,
+    "via_corabastos_kg": 15657.9
+   },
+   {
+    "dia": 25,
+    "dependencia_volumen": 0.7402,
+    "precio_corabastos": 0.9548,
+    "confianza_media": 0.2986,
+    "local_kg": 773.2,
+    "conjunta_kg": 1944.4,
+    "via_corabastos_kg": 15565.5
+   },
+   {
+    "dia": 26,
+    "dependencia_volumen": 0.7358,
+    "precio_corabastos": 0.953,
+    "confianza_media": 0.3144,
+    "local_kg": 804.2,
+    "conjunta_kg": 2022.2,
+    "via_corabastos_kg": 15473.1
+   },
+   {
+    "dia": 27,
+    "dependencia_volumen": 0.7314,
+    "precio_corabastos": 0.9512,
+    "confianza_media": 0.3286,
+    "local_kg": 835.1,
+    "conjunta_kg": 2100.0,
+    "via_corabastos_kg": 15380.7
+   },
+   {
+    "dia": 28,
+    "dependencia_volumen": 0.727,
+    "precio_corabastos": 0.9494,
+    "confianza_media": 0.342,
+    "local_kg": 865.2,
+    "conjunta_kg": 2177.8,
+    "via_corabastos_kg": 15289.0
+   },
+   {
+    "dia": 29,
+    "dependencia_volumen": 0.7239,
+    "precio_corabastos": 0.9481,
+    "confianza_media": 0.357,
+    "local_kg": 872.8,
+    "conjunta_kg": 2247.7,
+    "via_corabastos_kg": 15223.1
+   },
+   {
+    "dia": 30,
+    "dependencia_volumen": 0.7203,
+    "precio_corabastos": 0.9466,
+    "confianza_media": 0.3703,
+    "local_kg": 880.4,
+    "conjunta_kg": 2327.6,
+    "via_corabastos_kg": 15148.7
+   },
+   {
+    "dia": 31,
+    "dependencia_volumen": 0.7176,
+    "precio_corabastos": 0.9455,
+    "confianza_media": 0.3834,
+    "local_kg": 880.4,
+    "conjunta_kg": 2396.0,
+    "via_corabastos_kg": 15090.6
+   },
+   {
+    "dia": 32,
+    "dependencia_volumen": 0.7146,
+    "precio_corabastos": 0.9443,
+    "confianza_media": 0.396,
+    "local_kg": 880.4,
+    "conjunta_kg": 2469.4,
+    "via_corabastos_kg": 15028.2
+   },
+   {
+    "dia": 33,
+    "dependencia_volumen": 0.7118,
+    "precio_corabastos": 0.9431,
+    "confianza_media": 0.4069,
+    "local_kg": 880.4,
+    "conjunta_kg": 2539.6,
+    "via_corabastos_kg": 14968.5
+   },
+   {
+    "dia": 34,
+    "dependencia_volumen": 0.7092,
+    "precio_corabastos": 0.942,
+    "confianza_media": 0.4172,
+    "local_kg": 880.4,
+    "conjunta_kg": 2602.7,
+    "via_corabastos_kg": 14914.9
+   },
+   {
+    "dia": 35,
+    "dependencia_volumen": 0.7066,
+    "precio_corabastos": 0.941,
+    "confianza_media": 0.4289,
+    "local_kg": 880.4,
+    "conjunta_kg": 2666.4,
+    "via_corabastos_kg": 14860.8
+   },
+   {
+    "dia": 36,
+    "dependencia_volumen": 0.7038,
+    "precio_corabastos": 0.9398,
+    "confianza_media": 0.4403,
+    "local_kg": 880.4,
+    "conjunta_kg": 2736.4,
+    "via_corabastos_kg": 14801.3
+   },
+   {
+    "dia": 37,
+    "dependencia_volumen": 0.7012,
+    "precio_corabastos": 0.9387,
+    "confianza_media": 0.4494,
+    "local_kg": 880.4,
+    "conjunta_kg": 2801.1,
+    "via_corabastos_kg": 14746.2
+   },
+   {
+    "dia": 38,
+    "dependencia_volumen": 0.6989,
+    "precio_corabastos": 0.9378,
+    "confianza_media": 0.4596,
+    "local_kg": 880.4,
+    "conjunta_kg": 2859.3,
+    "via_corabastos_kg": 14696.8
+   },
+   {
+    "dia": 39,
+    "dependencia_volumen": 0.6963,
+    "precio_corabastos": 0.9367,
+    "confianza_media": 0.4694,
+    "local_kg": 880.4,
+    "conjunta_kg": 2923.2,
+    "via_corabastos_kg": 14642.4
+   },
+   {
+    "dia": 40,
+    "dependencia_volumen": 0.7032,
+    "precio_corabastos": 0.9396,
+    "confianza_media": 0.4752,
+    "local_kg": 647.9,
+    "conjunta_kg": 2983.0,
+    "via_corabastos_kg": 14789.2
+   },
+   {
+    "dia": 41,
+    "dependencia_volumen": 0.6986,
+    "precio_corabastos": 0.9377,
+    "confianza_media": 0.4803,
+    "local_kg": 647.9,
+    "conjunta_kg": 3098.0,
+    "via_corabastos_kg": 14691.5
+   },
+   {
+    "dia": 42,
+    "dependencia_volumen": 0.6975,
+    "precio_corabastos": 0.9372,
+    "confianza_media": 0.4853,
+    "local_kg": 647.9,
+    "conjunta_kg": 3124.1,
+    "via_corabastos_kg": 14669.3
+   },
+   {
+    "dia": 43,
+    "dependencia_volumen": 0.6954,
+    "precio_corabastos": 0.9364,
+    "confianza_media": 0.491,
+    "local_kg": 647.9,
+    "conjunta_kg": 3176.3,
+    "via_corabastos_kg": 14625.0
+   },
+   {
+    "dia": 44,
+    "dependencia_volumen": 0.6842,
+    "precio_corabastos": 0.9317,
+    "confianza_media": 0.4996,
+    "local_kg": 880.4,
+    "conjunta_kg": 3222.8,
+    "via_corabastos_kg": 14387.8
+   },
+   {
+    "dia": 45,
+    "dependencia_volumen": 0.6846,
+    "precio_corabastos": 0.9319,
+    "confianza_media": 0.5086,
+    "local_kg": 880.4,
+    "conjunta_kg": 3212.5,
+    "via_corabastos_kg": 14396.6
+   },
+   {
+    "dia": 46,
+    "dependencia_volumen": 0.6829,
+    "precio_corabastos": 0.9312,
+    "confianza_media": 0.5169,
+    "local_kg": 880.4,
+    "conjunta_kg": 3254.1,
+    "via_corabastos_kg": 14361.2
+   },
+   {
+    "dia": 47,
+    "dependencia_volumen": 0.682,
+    "precio_corabastos": 0.9308,
+    "confianza_media": 0.5248,
+    "local_kg": 880.4,
+    "conjunta_kg": 3276.2,
+    "via_corabastos_kg": 14342.4
+   },
+   {
+    "dia": 48,
+    "dependencia_volumen": 0.6809,
+    "precio_corabastos": 0.9304,
+    "confianza_media": 0.5334,
+    "local_kg": 880.4,
+    "conjunta_kg": 3302.2,
+    "via_corabastos_kg": 14320.3
+   },
+   {
+    "dia": 49,
+    "dependencia_volumen": 0.6798,
+    "precio_corabastos": 0.9299,
+    "confianza_media": 0.5384,
+    "local_kg": 880.4,
+    "conjunta_kg": 3330.4,
+    "via_corabastos_kg": 14296.4
+   },
+   {
+    "dia": 50,
+    "dependencia_volumen": 0.6793,
+    "precio_corabastos": 0.9297,
+    "confianza_media": 0.5443,
+    "local_kg": 880.4,
+    "conjunta_kg": 3342.5,
+    "via_corabastos_kg": 14286.0
+   },
+   {
+    "dia": 51,
+    "dependencia_volumen": 0.6785,
+    "precio_corabastos": 0.9294,
+    "confianza_media": 0.55,
+    "local_kg": 880.4,
+    "conjunta_kg": 3362.8,
+    "via_corabastos_kg": 14268.8
+   },
+   {
+    "dia": 52,
+    "dependencia_volumen": 0.6778,
+    "precio_corabastos": 0.9291,
+    "confianza_media": 0.555,
+    "local_kg": 880.4,
+    "conjunta_kg": 3380.3,
+    "via_corabastos_kg": 14253.9
+   },
+   {
+    "dia": 53,
+    "dependencia_volumen": 0.6772,
+    "precio_corabastos": 0.9288,
+    "confianza_media": 0.56,
+    "local_kg": 880.4,
+    "conjunta_kg": 3395.6,
+    "via_corabastos_kg": 14240.9
+   },
+   {
+    "dia": 54,
+    "dependencia_volumen": 0.6765,
+    "precio_corabastos": 0.9286,
+    "confianza_media": 0.5649,
+    "local_kg": 880.4,
+    "conjunta_kg": 3411.2,
+    "via_corabastos_kg": 14227.6
+   },
+   {
+    "dia": 55,
+    "dependencia_volumen": 0.676,
+    "precio_corabastos": 0.9283,
+    "confianza_media": 0.5681,
+    "local_kg": 880.4,
+    "conjunta_kg": 3425.6,
+    "via_corabastos_kg": 14215.4
+   },
+   {
+    "dia": 56,
+    "dependencia_volumen": 0.6756,
+    "precio_corabastos": 0.9282,
+    "confianza_media": 0.5706,
+    "local_kg": 880.4,
+    "conjunta_kg": 3434.2,
+    "via_corabastos_kg": 14208.1
+   },
+   {
+    "dia": 57,
+    "dependencia_volumen": 0.6753,
+    "precio_corabastos": 0.9281,
+    "confianza_media": 0.5739,
+    "local_kg": 880.4,
+    "conjunta_kg": 3442.5,
+    "via_corabastos_kg": 14201.1
+   },
+   {
+    "dia": 58,
+    "dependencia_volumen": 0.6748,
+    "precio_corabastos": 0.9279,
+    "confianza_media": 0.5766,
+    "local_kg": 880.4,
+    "conjunta_kg": 3453.7,
+    "via_corabastos_kg": 14191.5
+   },
+   {
+    "dia": 59,
+    "dependencia_volumen": 0.6745,
+    "precio_corabastos": 0.9277,
+    "confianza_media": 0.5805,
+    "local_kg": 880.4,
+    "conjunta_kg": 3461.7,
+    "via_corabastos_kg": 14184.7
+   },
+   {
+    "dia": 60,
+    "dependencia_volumen": 0.674,
+    "precio_corabastos": 0.9275,
+    "confianza_media": 0.5826,
+    "local_kg": 880.4,
+    "conjunta_kg": 3474.2,
+    "via_corabastos_kg": 14174.1
+   },
+   {
+    "dia": 61,
+    "dependencia_volumen": 0.6738,
+    "precio_corabastos": 0.9274,
+    "confianza_media": 0.5849,
+    "local_kg": 880.4,
+    "conjunta_kg": 3479.5,
+    "via_corabastos_kg": 14169.6
+   },
+   {
+    "dia": 62,
+    "dependencia_volumen": 0.6735,
+    "precio_corabastos": 0.9273,
+    "confianza_media": 0.5864,
+    "local_kg": 880.4,
+    "conjunta_kg": 3487.0,
+    "via_corabastos_kg": 14163.3
+   },
+   {
+    "dia": 63,
+    "dependencia_volumen": 0.6733,
+    "precio_corabastos": 0.9272,
+    "confianza_media": 0.5882,
+    "local_kg": 880.4,
+    "conjunta_kg": 3492.2,
+    "via_corabastos_kg": 14158.8
+   },
+   {
+    "dia": 64,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5926,
+    "local_kg": 880.4,
+    "conjunta_kg": 3498.5,
+    "via_corabastos_kg": 14153.4
+   },
+   {
+    "dia": 65,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5946,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 66,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5972,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 67,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5982,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 68,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.5989,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 69,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6005,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 70,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6017,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 71,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6025,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 72,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6023,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 73,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6024,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 74,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6039,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 75,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.604,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 76,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6043,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 77,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6041,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 78,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6033,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 79,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.603,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 80,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6034,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 81,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6043,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 82,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6037,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 83,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6039,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 84,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6038,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 85,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6034,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 86,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6023,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 87,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6027,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 88,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6019,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 89,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6021,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 90,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6025,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 91,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6029,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 92,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6018,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 93,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.601,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 94,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6014,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 95,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.604,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 96,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6052,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 97,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6046,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 98,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6046,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 99,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6042,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 100,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6048,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 101,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6054,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 102,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6053,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 103,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6066,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 104,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6063,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 105,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6056,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 106,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6065,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 107,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.608,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 108,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.608,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 109,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6091,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 110,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.609,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 111,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6087,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 112,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6088,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 113,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6092,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 114,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6093,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 115,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6093,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 116,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6096,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 117,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6089,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 118,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6086,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   },
+   {
+    "dia": 119,
+    "dependencia_volumen": 0.673,
+    "precio_corabastos": 0.9271,
+    "confianza_media": 0.6084,
+    "local_kg": 880.4,
+    "conjunta_kg": 3500.0,
+    "via_corabastos_kg": 14152.2
+   }
+  ]
+ },
+ "territorio": {
+  "corabastos_ha": 40.89,
+  "cedida_ha": 8.5,
+  "tiendas": 144,
+  "comedores": 6,
+  "colegios": 10,
+  "huertas": 10,
+  "huertas_m2": 25000,
+  "accesos_camiones": 5
+ },
+ "invariantes": [
+  "cuenta de insectos (vivos + comidos = emergidos) en cada medición",
+  "cuenta de néctar (producido = consumido + en flores) en cada medición",
+  "cuenta de alimentos (consumido = Corabastos + otros canales + acopio) por escenario",
+  "identidades estables y azar por dirección lógica (misma salida con la misma semilla)"
+ ]
+}

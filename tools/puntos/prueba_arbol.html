@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#bfd4e2}</style></head><body>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three'; import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+const R = new THREE.WebGLRenderer({ antialias: true }); R.setSize(1200, 600); document.body.appendChild(R.domElement);
+const S = new THREE.Scene(); S.add(new THREE.HemisphereLight(0xffffff, 0x556644, 1.6)); const d = new THREE.DirectionalLight(0xffffff, 2); d.position.set(3, 5, 4); S.add(d);
+const cam = new THREE.PerspectiveCamera(35, 2, 0.1, 500); cam.position.set(0, 6, 26); cam.lookAt(0, 5, 0);
+const L = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder); const info = [];
+for (const [i, p] of [['madera', 0], ['hojas', 1]].entries()) { const g = await L.loadAsync(`../../data3d/models/jacaranda_L0_${p[0]}.glb`); g.scene.position.x = -6; S.add(g.scene);
+  g.scene.traverse(m => { if (m.isMesh) { const uv = m.geometry.attributes.uv; info.push(p[0] + ' uv:' + (uv ? uv.array.constructor.name + ' norm=' + uv.normalized : 'none') + ' pos:' + m.geometry.attributes.position.array.constructor.name + ' scale=' + m.scale.toArray().map(v => v.toFixed(3)) + ' map=' + !!(m.material.map) + (m.material.map ? ' rep=' + m.material.map.repeat.toArray() + ' off=' + m.material.map.offset.toArray() : '')); } }); }
+R.render(S, cam); window.LISTO = info.join(' || ');
+</script></body></html>
